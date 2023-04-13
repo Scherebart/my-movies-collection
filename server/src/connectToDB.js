@@ -9,6 +9,9 @@ module.exports = async (knexConfig) => {
   return {
     getKnex() {
       return connection;
-    }
+    },
+    async destroy() {
+      await connection.destroy();
+    },
   };
 };
