@@ -12,11 +12,17 @@ module.exports = async ({ envType, knex: knexConfig, apiKeyOmdb, port }) => {
 
   const app = express();
   app.use(express.static(path.join(__dirname, "public")));
-  app.use((req, res, next) => {
-    req.knexBuilder = dbProvider.getKnex();
+  app.use(async (req, res, next) => {
+    const knex = dbProvider.getKnex();
+    req.knex = knex;
+
     const userId = req.get("user-id");
     if (userId) {
-      req.user = { id: userId };
+      const userFromDb = await knex
+        .from("users")
+        .where({ id: userId })
+        .first();
+      req.user = userFromDb;
     }
 
     next();
