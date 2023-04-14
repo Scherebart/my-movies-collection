@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const { TABLE_USERS } = require("./constants");
 const { ApplicationError, UnauthorizedError } = require("./errors");
 
 router.use((req, res, next) => {
@@ -13,13 +14,20 @@ router.use((req, res, next) => {
 
 router.get("/my-movies-collection", async (req, res, next) => {
   const { knex, user } = req;
-  if (!user) {
-    return next(new ApplicationError(`no such user ${user.id}`));
-  }
 
   const { movies_collection } = user;
 
   return res.status(200).type("json").send(JSON.parse(movies_collection));
+});
+
+router.put("/my-movies-collection", async (req, res, next) => {
+  const { knex, user, body: newMoviesCollection } = req;
+
+  await knex(TABLE_USERS)
+    .where({ id: user.id })
+    .update({ movies_collection: JSON.stringify(newMoviesCollection) });
+
+  return res.status(204).send();
 });
 
 router.use((err, req, res, next) => {

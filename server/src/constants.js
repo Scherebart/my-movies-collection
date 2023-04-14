@@ -4,4 +4,5 @@ module.exports = {
     DEV: "DEV",
     PROD: "PROD",
   }),
+  TABLE_USERS: "users",
 };

@@ -32,6 +32,36 @@ describe("As a user", () => {
     expect(status).toBe(200);
     expect(data).toEqual([]);
   });
+
+  test("I can set favourite movies", async () => {
+    await Tester.haveUser({ id: USER_ID });
+    await Tester.haveUser({ id: ANOTHER_USER_ID });
+    await Tester.userHasCollection(USER_ID, ["qwe", "321"]);
+
+    const { status, data } = await asUser(USER_ID).request({
+      method: "PUT",
+      url: "/api/my-movies-collection",
+      data: ["321", "asd"],
+    });
+
+    expect(status).toBe(204);
+    
+    const userFromDb = await Tester.grabUser(USER_ID)
+    expect(userFromDb).toMatchObject({
+      movies_collection: ["321", "asd"],
+    });
+  });
+
+  test("I get 404 on calling non-existent api method", async () => {
+    await Tester.haveUser({ id: USER_ID });
+
+    const { status } = await asUser(USER_ID).request({
+      method: "GET",
+      url: "/api/non-existent-feature",
+    });
+
+    expect(status).toBe(404);
+  });
 });
 
 describe("As a non-existent user", () => {
@@ -47,7 +77,7 @@ describe("As a non-existent user", () => {
     expect(status).toBe(401);
   });
 
-  test("I get 401 on calling nonexistent api method", async () => {
+  test("I get 401 on calling non-existent api method", async () => {
     const { status } = await asUser(NONEXISTENT_USER_ID).request({
       method: "GET",
       url: "/api/non-existent-feature",

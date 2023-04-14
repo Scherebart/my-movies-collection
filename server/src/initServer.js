@@ -5,7 +5,7 @@ const connectLiveReload = require("connect-livereload");
 
 const connectToDB = require("./connectToDB");
 const apiRouter = require("./routerApi");
-const { EnvType } = require("./constants");
+const { EnvType, TABLE_USERS } = require("./constants");
 
 module.exports = async ({ envType, knex: knexConfig, apiKeyOmdb, port }) => {
   const dbProvider = await connectToDB(knexConfig);
@@ -18,15 +18,13 @@ module.exports = async ({ envType, knex: knexConfig, apiKeyOmdb, port }) => {
 
     const userId = req.get("user-id");
     if (userId) {
-      const userFromDb = await knex
-        .from("users")
-        .where({ id: userId })
-        .first();
+      const userFromDb = await knex(TABLE_USERS).where({ id: userId }).first();
       req.user = userFromDb;
     }
 
     next();
   });
+  app.use(express.json());
   app.use("/api", apiRouter);
 
   if (envType === EnvType.DEV) {
