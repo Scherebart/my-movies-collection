@@ -1,28 +1,35 @@
 const TABLE_USERS = "users";
 
-module.exports = (db) => ({
-  async grabUser(userId) {
-    const userFromDB = await db(TABLE_USERS).where({ id: userId }).first();
-    userFromDB.movies_collection = JSON.parse( userFromDB.movies_collection)
+module.exports = (sqlite) => ({
+  grabUser(userId) {
+    const userFromDB = sqlite
+      .prepare(`SELECT * FROM ${TABLE_USERS} WHERE id = ?`)
+      .get(userId);
+    userFromDB.movies_collection = JSON.parse(userFromDB.movies_collection);
 
-    return userFromDB
+    return userFromDB;
   },
 
   async haveUser(user) {
     const { id, firstName, lastName } = user;
     const moviesCollection = [];
 
-    return db(TABLE_USERS).insert({
-      id: id || undefined,
-      first_name: firstName || "john",
-      last_name: lastName || "Mick",
-      movies_collection: JSON.stringify(moviesCollection),
-    });
+    return sqlite
+      .prepare(
+        `INSERT INTO ${TABLE_USERS} (id, first_name, last_name, movies_collection) 
+         VALUES (?, ?, ?, ?)`
+      )
+      .run(
+        id || undefined,
+        firstName || "john",
+        lastName || "Mick",
+        JSON.stringify(moviesCollection)
+      );
   },
 
   async userHasCollection(userId, moviesCollection) {
-    return db(TABLE_USERS)
-      .where({ id: userId })
-      .update({ movies_collection: JSON.stringify(moviesCollection) });
+    return sqlite
+      .prepare(`UPDATE ${TABLE_USERS} SET movies_collection = ? WHERE id = ?`)
+      .run(JSON.stringify(moviesCollection), userId);
   },
 });

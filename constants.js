@@ -3,6 +3,5 @@ module.exports = {
     TEST: "TEST",
     DEV: "DEV",
     PROD: "PROD",
-  }),
-  TABLE_USERS: "users",
+  })
 };

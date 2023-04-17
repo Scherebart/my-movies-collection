@@ -3,22 +3,23 @@ const express = require("express");
 const liveReload = require("livereload");
 const connectLiveReload = require("connect-livereload");
 
-const connectToDB = require("./connectToDB");
+const connectToSqlite = require("./connectToSqlite");
 const apiRouter = require("./routerApi");
-const { EnvType, TABLE_USERS } = require("./constants");
+const { EnvType } = require("../../constants");
 
-module.exports = async ({ envType, knex: knexConfig, apiKeyOmdb, port }) => {
-  const dbProvider = await connectToDB(knexConfig);
+module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
+  const sqlite = connectToSqlite(sqliteConfig);
 
   const app = express();
   app.use(express.static(path.join(__dirname, "public")));
   app.use(async (req, res, next) => {
-    const knex = dbProvider.getKnex();
-    req.knex = knex;
+    req.db = sqlite;
 
     const userId = req.get("user-id");
     if (userId) {
-      const userFromDb = await knex(TABLE_USERS).where({ id: userId }).first();
+      const userFromDb = sqlite
+        .prepare(`SELECT * FROM users WHERE id = ?`)
+        .get(userId);
       req.user = userFromDb;
     }
 
@@ -45,23 +46,21 @@ module.exports = async ({ envType, knex: knexConfig, apiKeyOmdb, port }) => {
   });
 
   async function closeServer() {
-    await new Promise((success, error) =>
+    await new Promise((resolve, reject) =>
       server.close((err) => {
         if (err) {
-          return error(err);
+          return reject(err);
         }
 
-        success();
+        resolve();
       })
     );
 
-    await dbProvider.destroy();
+    sqlite.close();
   }
 
   return {
     closeServer,
-    getDbProvider() {
-      return dbProvider;
-    },
+    sqlite,
   };
 };

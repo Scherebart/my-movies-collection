@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const { TABLE_USERS } = require("./constants");
 const { ApplicationError, UnauthorizedError } = require("./errors");
 
 router.use((req, res, next) => {
@@ -13,7 +12,7 @@ router.use((req, res, next) => {
 });
 
 router.get("/my-movies-collection", async (req, res, next) => {
-  const { knex, user } = req;
+  const { user } = req;
 
   const { movies_collection } = user;
 
@@ -21,11 +20,12 @@ router.get("/my-movies-collection", async (req, res, next) => {
 });
 
 router.put("/my-movies-collection", async (req, res, next) => {
-  const { knex, user, body: newMoviesCollection } = req;
+  const { db, user, body: newMoviesCollection } = req;
 
-  await knex(TABLE_USERS)
-    .where({ id: user.id })
-    .update({ movies_collection: JSON.stringify(newMoviesCollection) });
+  db.prepare("UPDATE users SET movies_collection = ? WHERE id = ?").run(
+    JSON.stringify(newMoviesCollection),
+    user.id
+  );
 
   return res.status(204).send();
 });

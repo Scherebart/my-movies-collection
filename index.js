@@ -1,4 +1,4 @@
-const { knex, apiKeyOmdb, apiServer } = require("./config");
-const initServer = require("./server/initServer");
+const { sqlite, apiKeyOmdb, apiServer } = require("./config");
+const initServer = require("./server/src/initServer");
 
-initServer({ knex, apiKeyOmdb, ...apiServer });
+initServer({ sqliteConfig: sqlite, apiKeyOmdb, ...apiServer });
