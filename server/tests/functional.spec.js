@@ -7,7 +7,7 @@ const USER_ID = 4;
 const ANOTHER_USER_ID = 5;
 
 describe("As a user", () => {
-  test("I get my favourite movies", async () => {
+  test.only("I get my favourite movies", async () => {
     await Tester.haveUser({ id: USER_ID });
     await Tester.haveUser({ id: ANOTHER_USER_ID });
     await Tester.userHasCollection(USER_ID, ["qwe", "321"]);
