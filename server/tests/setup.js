@@ -13,6 +13,7 @@ const omdbApiHelpers = require("./omdbApiHelpers");
 const DB_STUB_FILE = path.join(__dirname, ".db", "db-STUB.sqlite3");
 const DB_FILE = path.join(__dirname, ".db", `db-test-${uuid()}.sqlite3`);
 const SERVER_PORT = 8081;
+const API_KEY_OMDB = "3b98b3f0";
 
 function functional() {
   let closeServer;
@@ -33,21 +34,20 @@ function functional() {
      * instead of copying the db file for each run of a spec file.
      *
      * However this feature is not present in the trunk branch of the sqlite repo,
-     * which build is used by better-sqlite3.
-     * Most probably we could make our own build of sqlite without significant problems
+     * which build is included by better-sqlite3.
+     * Possibly we could make our own build of sqlite without significant problems
      * (both the C sqlite and JS better-sqlite projects are well documented)
      */
     copyFileSync(DB_STUB_FILE, DB_FILE);
 
-    const apiKeyOmdb = "3b98b3f0";
 
-    Object.assign(omdbApi, omdbApiHelpers(apiKeyOmdb));
+    Object.assign(omdbApi, omdbApiHelpers(API_KEY_OMDB));
 
     ({ closeServer, sqlite } = await initServer({
       sqliteConfig: {
         path: DB_FILE,
       },
-      apiKeyOmdb,
+      apiKeyOmdb: API_KEY_OMDB,
       port: SERVER_PORT,
       envType: EnvType.TEST,
     }));

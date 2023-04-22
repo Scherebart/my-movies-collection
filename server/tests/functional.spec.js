@@ -12,7 +12,15 @@ describe("As a user", () => {
   });
 
   test("I get my favourite movies", async () => {
-    db.userHasCollection(USER_ID, ["qwe", "321"]);
+    db.userHasCollection(USER_ID, ["tt1285016", "tt0101889"]);
+    omdbApi.willGetMovie("tt1285016", {
+      Title: "The Social Network",
+      Year: "2010",
+    });
+    omdbApi.willGetMovie("tt0101889", {
+      Title: "The Fisher King",
+      Year: "1991",
+    });
 
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
@@ -20,7 +28,10 @@ describe("As a user", () => {
     });
 
     expect(status).toBe(200);
-    expect(data).toEqual(["qwe", "321"]);
+    expect(data).toEqual([
+      { Title: "The Social Network", Year: "2010" },
+      { Title: "The Fisher King", Year: "1991" },
+    ]);
   });
 
   test("I get empty collection when I have no favourite movies", async () => {

@@ -20,7 +20,7 @@ module.exports = ({ apiKeyOmdb }) => {
   router.get("/my-movies", async (req, res, next) => {
     const { user } = req;
 
-    const movies = getUserMovies(user);
+    const movies = await getUserMovies(user);
 
     return res.status(200).type("json").send(movies);
   });

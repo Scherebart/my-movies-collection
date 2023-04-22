@@ -10,10 +10,23 @@ module.exports = ({ apiKeyOmdb }) => {
   });
 
   return {
-    getUserMovies(user) {
+    async getUserMovies(user) {
       const { movies } = user;
 
-      return JSON.parse(movies);
+      const movieIds = JSON.parse(movies);
+      return Promise.all(
+        movieIds.map(async (id) => {
+          const { status, data } = await omdbAxiosBase.request({
+            params: { i: id },
+          });
+
+          if (status != 200 || data.Response === "False") {
+            return null;
+          }
+
+          return data;
+        })
+      );
     },
     async getMovie(id) {
       const { status, data } = await omdbAxiosBase.request({
