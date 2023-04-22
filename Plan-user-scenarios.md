@@ -1,10 +1,10 @@
 # User scenarios
-I need to clarify what behaviour do I expect to come out from this software.
+I need to clarify what behaviour do I expect to out of this software.
 Hence I set some macro and comopnent user stories.
 
-## As a guest or user I want to browse the large movie database
+## As a user I want to browse the movie DB
 I expect to be able to search by: 
-- title matching a typed title fragment.
+- title matching a phrase.
 
 ### I want to see some details on particular movie
 I expect to see some basic details about the movie. As a consequence a dedicated screen to display such info on one movie should not required.

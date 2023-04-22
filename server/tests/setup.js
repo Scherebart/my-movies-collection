@@ -1,12 +1,14 @@
 const path = require("path");
 const { copyFileSync, rmSync } = require("node:fs");
 
-const axios = require("axios");
+const nock = require("nock");
+const axios = jest.requireActual("axios");
 const { v4: uuid } = require("uuid");
 
 const initServer = require("../src/initServer");
 const { EnvType } = require("../../constants");
-const testHelpers = require("./testHelpers");
+const dbHelpers = require("./dbHelpers");
+const omdbApiHelpers = require("./omdbApiHelpers");
 
 const DB_STUB_FILE = path.join(__dirname, ".db", "db-STUB.sqlite3");
 const DB_FILE = path.join(__dirname, ".db", `db-test-${uuid()}.sqlite3`);
@@ -16,7 +18,8 @@ function functional() {
   let closeServer;
   let sqlite;
 
-  const Tester = {};
+  const db = {};
+  const omdbApi = {};
 
   beforeAll(async () => {
     /**
@@ -36,22 +39,33 @@ function functional() {
      */
     copyFileSync(DB_STUB_FILE, DB_FILE);
 
+    const apiKeyOmdb = "3b98b3f0";
+
+    Object.assign(omdbApi, omdbApiHelpers(apiKeyOmdb));
+
     ({ closeServer, sqlite } = await initServer({
       sqliteConfig: {
         path: DB_FILE,
       },
+      apiKeyOmdb,
       port: SERVER_PORT,
       envType: EnvType.TEST,
     }));
 
-    Object.assign(Tester, testHelpers(sqlite));
+    Object.assign(db, dbHelpers(sqlite));
   });
 
   beforeEach(() => {
+    // This line makes the nock intercept calls to the omdbapi host
+    // Without committing any configuration, nock is effectively absent for that host,
+    // and all calls go to the real host
+    nock("https://www.omdbapi.com").get("/").reply(500);
+
     sqlite.prepare("BEGIN IMMEDIATE;").run();
   });
 
   afterEach(() => {
+    nock.cleanAll();
     sqlite.prepare("ROLLBACK").run();
   });
 
@@ -87,7 +101,8 @@ function functional() {
   return {
     asUser,
     asGuest,
-    Tester,
+    db,
+    omdbApi,
   };
 }
 

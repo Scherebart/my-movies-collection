@@ -26,11 +26,11 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
     next();
   });
   app.use(express.json());
-  app.use("/api", apiRouter);
+  app.use("/api", apiRouter({ apiKeyOmdb }));
 
   if (envType === EnvType.DEV) {
     const liveReloadServer = liveReload.createServer();
-    liveReloadServer.watch(path.join(__dirname, "public"));
+    liveReloadServer.watch(path.join(__dirname, "..", "..", "public"));
     liveReloadServer.server.once("connection", () => {
       setTimeout(() => {
         liveReloadServer.refresh("/");

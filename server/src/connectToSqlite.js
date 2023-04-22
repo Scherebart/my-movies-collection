@@ -8,6 +8,7 @@ module.exports = (config) => {
    * I could run jest then with special env param to switch these logs on  
    **/ 
   const db = new Database(path, { verbose: null /* console.log*/ });
+  db.pragma("journal_mode = delete");
 
   return db;
 };

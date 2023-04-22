@@ -1,16 +1,18 @@
 const { functional } = require("./setup");
 
-const { asUser, asGuest, Tester } = functional();
+const { asUser, asGuest, db, omdbApi } = functional();
 
 const NONEXISTENT_USER_ID = 0;
 const USER_ID = 4;
 const ANOTHER_USER_ID = 5;
 
 describe("As a user", () => {
-  test.only("I get my favourite movies", async () => {
-    await Tester.haveUser({ id: USER_ID });
-    await Tester.haveUser({ id: ANOTHER_USER_ID });
-    await Tester.userHasCollection(USER_ID, ["qwe", "321"]);
+  beforeEach(() => {
+    db.haveUser({ id: USER_ID });
+  });
+
+  test("I get my favourite movies", async () => {
+    db.userHasCollection(USER_ID, ["qwe", "321"]);
 
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
@@ -22,8 +24,6 @@ describe("As a user", () => {
   });
 
   test("I get empty collection when I have no favourite movies", async () => {
-    await Tester.haveUser({ id: USER_ID });
-
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
       url: "/api/my-movies-collection",
@@ -34,9 +34,8 @@ describe("As a user", () => {
   });
 
   test("I can set favourite movies", async () => {
-    await Tester.haveUser({ id: USER_ID });
-    await Tester.haveUser({ id: ANOTHER_USER_ID });
-    await Tester.userHasCollection(USER_ID, ["qwe", "321"]);
+    db.haveUser({ id: ANOTHER_USER_ID });
+    db.userHasCollection(USER_ID, ["qwe", "321"]);
 
     const { status, data } = await asUser(USER_ID).request({
       method: "PUT",
@@ -45,16 +44,14 @@ describe("As a user", () => {
     });
 
     expect(status).toBe(204);
-    
-    const userFromDb = await Tester.grabUser(USER_ID)
+
+    const userFromDb = await db.grabUser(USER_ID);
     expect(userFromDb).toMatchObject({
       movies_collection: ["321", "asd"],
     });
   });
 
   test("I get 404 on calling non-existent api method", async () => {
-    await Tester.haveUser({ id: USER_ID });
-
     const { status } = await asUser(USER_ID).request({
       method: "GET",
       url: "/api/non-existent-feature",
@@ -62,12 +59,89 @@ describe("As a user", () => {
 
     expect(status).toBe(404);
   });
+
+  test("I can get details of existing movie", async () => {
+    omdbApi.willGetMovie("tt1285016", {
+      Title: "The Social Network",
+      Year: "2010",
+    });
+
+    const { status, data } = await asUser(USER_ID).request({
+      method: "GET",
+      url: "/api/movie/tt1285016",
+    });
+
+    expect(status).toBe(200);
+    expect(data).toEqual({
+      Title: "The Social Network",
+      Year: "2010",
+    });
+  });
+
+  test("I get 404 on nonexistent movie", async () => {
+    omdbApi.willGetNothing("tt1285016");
+
+    const { status } = await asUser(USER_ID).request({
+      method: "GET",
+      url: "/api/movie/tt1285016",
+    });
+
+    expect(status).toBe(404);
+  });
+
+  test("I can search for movies", async () => {
+    omdbApi.willSearchWith("love crazy", [
+      {
+        Title: "Crazy, Stupid, Love.",
+        Year: "2011",
+      },
+      {
+        Title: "Love Crazy",
+        Year: "1941",
+      },
+    ]);
+
+    const { status, data } = await asUser(USER_ID).request({
+      method: "GET",
+      url: `/api/movies`,
+      params: {
+        terms: "love crazy",
+      },
+    });
+
+    expect(status).toBe(200);
+    expect(data).toEqual([
+      {
+        Title: "Crazy, Stupid, Love.",
+        Year: "2011",
+      },
+      {
+        Title: "Love Crazy",
+        Year: "1941",
+      },
+    ]);
+  });
+
+  test("I can search for no movies", async () => {
+    omdbApi.willSearchWith("love", []);
+
+    const { status, data } = await asUser(USER_ID).request({
+      method: "GET",
+      url: `/api/movies`,
+      params: {
+        terms: "love",
+      },
+    });
+
+    expect(status).toBe(200);
+    expect(data).toEqual([]);
+  });
 });
 
 describe("As a non-existent user", () => {
   test("I get 401 on calling api method", async () => {
-    await Tester.haveUser({ id: USER_ID });
-    await Tester.haveUser({ id: ANOTHER_USER_ID });
+    db.haveUser({ id: USER_ID });
+    db.haveUser({ id: ANOTHER_USER_ID });
 
     const { status } = await asUser(NONEXISTENT_USER_ID).request({
       method: "GET",

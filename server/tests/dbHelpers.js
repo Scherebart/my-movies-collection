@@ -10,7 +10,7 @@ module.exports = (sqlite) => ({
     return userFromDB;
   },
 
-  async haveUser(user) {
+  haveUser(user) {
     const { id, firstName, lastName } = user;
     const moviesCollection = [];
 
@@ -27,7 +27,7 @@ module.exports = (sqlite) => ({
       );
   },
 
-  async userHasCollection(userId, moviesCollection) {
+  userHasCollection(userId, moviesCollection) {
     return sqlite
       .prepare(`UPDATE ${TABLE_USERS} SET movies_collection = ? WHERE id = ?`)
       .run(JSON.stringify(moviesCollection), userId);
