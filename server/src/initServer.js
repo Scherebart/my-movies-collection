@@ -11,7 +11,7 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
   const sqlite = connectToSqlite(sqliteConfig);
 
   const app = express();
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, '..','..', "web")));
   app.use(async (req, res, next) => {
     req.db = sqlite;
 

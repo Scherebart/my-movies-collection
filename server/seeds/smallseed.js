@@ -10,32 +10,32 @@ exports.seed = async function (knex) {
       id: 1,
       first_name: "Anona",
       last_name: "Cruz",
-      movies_collection: '["tt0848228","tt4154756","tt2395427","tt4154796"]',
+      movies: '["tt0848228","tt4154756","tt2395427","tt4154796"]',
     },
     {
       id: 2,
       first_name: "Camilla",
       last_name: "Sayer",
-      movies_collection: "[]",
+      movies: "[]",
     },
     {
       id: 3,
       first_name: "Ganesh",
       last_name: "Zentai",
-      movies_collection:
+      movies:
         '["tt0287871","tt2975590","tt0103776","tt4116284","tt2313197"]',
     },
     {
       id: 4,
       first_name: "Vivien",
       last_name: "Straub",
-      movies_collection: '["tt0926084","tt0417741"]',
+      movies: '["tt0926084","tt0417741"]',
     },
     {
       id: 5,
       first_name: "Bernardita",
       last_name: "Bishop",
-      movies_collection: '["tt0389860"]',
+      movies: '["tt0389860"]',
     },
   ]);
 };

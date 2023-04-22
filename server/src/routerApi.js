@@ -2,15 +2,10 @@ const express = require("express");
 const axios = require("axios");
 
 const { ApplicationError, UnauthorizedError } = require("./errors");
+const reader = require("./reader");
 
 module.exports = ({ apiKeyOmdb }) => {
-  const omdbAxiosBase = axios.create({
-    baseURL: "https://www.omdbapi.com/",
-    method: "get",
-    params: {
-      apikey: apiKeyOmdb,
-    },
-  });
+  const { getUserMovies, getMovie, searchMovies } = reader({ apiKeyOmdb });
 
   const router = express.Router();
 
@@ -22,18 +17,18 @@ module.exports = ({ apiKeyOmdb }) => {
     return next();
   });
 
-  router.get("/my-movies-collection", async (req, res, next) => {
+  router.get("/my-movies", async (req, res, next) => {
     const { user } = req;
 
-    const { movies_collection } = user;
+    const movies = getUserMovies(user);
 
-    return res.status(200).type("json").send(JSON.parse(movies_collection));
+    return res.status(200).type("json").send(movies);
   });
 
-  router.put("/my-movies-collection", async (req, res, next) => {
+  router.put("/my-movies", async (req, res, next) => {
     const { db, user, body: newMoviesCollection } = req;
 
-    db.prepare("UPDATE users SET movies_collection = ? WHERE id = ?").run(
+    db.prepare("UPDATE users SET movies = ? WHERE id = ?").run(
       JSON.stringify(newMoviesCollection),
       user.id
     );
@@ -41,22 +36,16 @@ module.exports = ({ apiKeyOmdb }) => {
     return res.status(204).send();
   });
 
-  router.get("/movie/:id", async (req, res, next) => {
+  router.get("/movies/:id", async (req, res, next) => {
     const { id } = req.params;
 
-    const { status, data } = await omdbAxiosBase.request({ params: { i: id } });
+    const movie = await getMovie(id);
 
-    if (status != 200) {
-      return next(
-        new Error(`OMDB api responded with non 200 status (${status})`)
-      );
-    }
-
-    if (data.Response === "False") {
+    if (movie === null) {
       return res.sendStatus(404);
     }
 
-    return res.status(status).type("json").send(data);
+    return res.status(200).type("json").send(movie);
   });
 
   router.get("/movies", async (req, res, next) => {
@@ -64,22 +53,7 @@ module.exports = ({ apiKeyOmdb }) => {
       query: { terms },
     } = req;
 
-    const { status, data } = await omdbAxiosBase.request({
-      params: { s: terms },
-    });
-
-    if (status != 200) {
-      return next(
-        new Error(`OMDB api responded with non 200 status (${status})`)
-      );
-    }
-
-    let result;
-    if (data.Response === "False") {
-      result = [];
-    } else {
-      result = data.Search;
-    }
+    const result = await searchMovies(terms);
 
     return res.status(200).type("json").send(result);
   });

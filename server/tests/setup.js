@@ -108,14 +108,4 @@ function functional() {
 
 module.exports = {
   functional,
-  knexfile: {
-    client: "better-sqlite3",
-    connection: {
-      filename: path.join(__dirname, DB_STUB_FILE),
-    },
-    migrations: {
-      tableName: "knex_migrations",
-      directory: path.join(__dirname, "..", "migrations"),
-    },
-  },
 };

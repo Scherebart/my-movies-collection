@@ -16,7 +16,7 @@ describe("As a user", () => {
 
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
-      url: "/api/my-movies-collection",
+      url: "/api/my-movies",
     });
 
     expect(status).toBe(200);
@@ -26,7 +26,7 @@ describe("As a user", () => {
   test("I get empty collection when I have no favourite movies", async () => {
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
-      url: "/api/my-movies-collection",
+      url: "/api/my-movies",
     });
 
     expect(status).toBe(200);
@@ -39,7 +39,7 @@ describe("As a user", () => {
 
     const { status, data } = await asUser(USER_ID).request({
       method: "PUT",
-      url: "/api/my-movies-collection",
+      url: "/api/my-movies",
       data: ["321", "asd"],
     });
 
@@ -47,7 +47,7 @@ describe("As a user", () => {
 
     const userFromDb = await db.grabUser(USER_ID);
     expect(userFromDb).toMatchObject({
-      movies_collection: ["321", "asd"],
+      movies: ["321", "asd"],
     });
   });
 
@@ -68,7 +68,7 @@ describe("As a user", () => {
 
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
-      url: "/api/movie/tt1285016",
+      url: "/api/movies/tt1285016",
     });
 
     expect(status).toBe(200);
@@ -83,7 +83,7 @@ describe("As a user", () => {
 
     const { status } = await asUser(USER_ID).request({
       method: "GET",
-      url: "/api/movie/tt1285016",
+      url: "/api/movies/tt1285016",
     });
 
     expect(status).toBe(404);
@@ -145,7 +145,7 @@ describe("As a non-existent user", () => {
 
     const { status } = await asUser(NONEXISTENT_USER_ID).request({
       method: "GET",
-      url: "/api/my-movies-collection",
+      url: "/api/my-movies",
     });
 
     expect(status).toBe(401);
@@ -165,7 +165,7 @@ describe("As a guest", () => {
   test("I get 401 on calling api method", async () => {
     const { status } = await asGuest().request({
       method: "GET",
-      url: "/api/my-movies-collection",
+      url: "/api/my-movies",
     });
 
     expect(status).toBe(401);

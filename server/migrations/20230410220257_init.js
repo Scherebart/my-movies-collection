@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.increments("id").primary()
     table.string('first_name')
     table.string('last_name')
-    table.text('movies_collection')
+    table.text('movies')
   });
 
   return query

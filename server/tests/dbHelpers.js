@@ -5,7 +5,7 @@ module.exports = (sqlite) => ({
     const userFromDB = sqlite
       .prepare(`SELECT * FROM ${TABLE_USERS} WHERE id = ?`)
       .get(userId);
-    userFromDB.movies_collection = JSON.parse(userFromDB.movies_collection);
+    userFromDB.movies = JSON.parse(userFromDB.movies);
 
     return userFromDB;
   },
@@ -16,7 +16,7 @@ module.exports = (sqlite) => ({
 
     return sqlite
       .prepare(
-        `INSERT INTO ${TABLE_USERS} (id, first_name, last_name, movies_collection) 
+        `INSERT INTO ${TABLE_USERS} (id, first_name, last_name, movies) 
          VALUES (?, ?, ?, ?)`
       )
       .run(
@@ -29,7 +29,7 @@ module.exports = (sqlite) => ({
 
   userHasCollection(userId, moviesCollection) {
     return sqlite
-      .prepare(`UPDATE ${TABLE_USERS} SET movies_collection = ? WHERE id = ?`)
+      .prepare(`UPDATE ${TABLE_USERS} SET movies = ? WHERE id = ?`)
       .run(JSON.stringify(moviesCollection), userId);
   },
 });
