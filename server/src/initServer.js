@@ -1,17 +1,17 @@
 const path = require("path");
+
 const express = require("express");
-const liveReload = require("livereload");
-const connectLiveReload = require("connect-livereload");
 
 const connectToSqlite = require("./connectToSqlite");
 const apiRouter = require("./routerApi");
 const { EnvType } = require("../../constants");
 
+const WEB_DIST = path.join(__dirname, "../../web/dist");
+
 module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
   const sqlite = connectToSqlite(sqliteConfig);
 
   const app = express();
-  app.use(express.static(path.join(__dirname, '..','..', "web")));
   app.use(async (req, res, next) => {
     req.db = sqlite;
 
@@ -27,21 +27,18 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
   });
   app.use(express.json());
   app.use("/api", apiRouter({ apiKeyOmdb }));
-
   if (envType === EnvType.DEV) {
-    const liveReloadServer = liveReload.createServer();
-    liveReloadServer.watch(path.join(__dirname, "..", "..", "public"));
-    liveReloadServer.server.once("connection", () => {
-      setTimeout(() => {
-        liveReloadServer.refresh("/");
-      }, 100);
-    });
-    app.use(connectLiveReload());
+    app.use("/", require("express-http-proxy")("localhost:5173"));
+  } else {
+    app.use(express.static(WEB_DIST));
   }
 
   const server = app.listen(port, () => {
     if (envType !== EnvType.TEST) {
-      console.log(`The server is listening on port ${port} ...`);
+      console.log(
+        "\x1b[32m\t➜  \x1b[0m\x1b[37mWeb server: \x1b[0m\x1b[36m%s\x1b[0m",
+        `http://localhost:${port}`
+      );
     }
   });
 

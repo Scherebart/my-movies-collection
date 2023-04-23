@@ -1,4 +1,4 @@
-const { sqlite, apiKeyOmdb, apiServer } = require("./config");
+const { envType, apiServer, sqlite, apiKeyOmdb } = require("./config");
 const initServer = require("./server/src/initServer");
 
-initServer({ sqliteConfig: sqlite, apiKeyOmdb, ...apiServer });
+initServer({ envType, sqliteConfig: sqlite, apiKeyOmdb, ...apiServer });
