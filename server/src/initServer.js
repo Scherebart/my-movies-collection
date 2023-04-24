@@ -13,7 +13,7 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
 
   const app = express();
   app.use(async (req, res, next) => {
-    req.db = sqlite;
+    req.sqlite = sqlite;
 
     const userId = req.get("user-id");
     if (userId) {
@@ -36,7 +36,7 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
   const server = app.listen(port, () => {
     if (envType !== EnvType.TEST) {
       console.log(
-        "\x1b[32m\t➜  \x1b[0m\x1b[37mWeb server: \x1b[0m\x1b[36m%s\x1b[0m",
+        "\x1b[32m ➜  \x1b[0m\x1b[37mWeb server: \x1b[0m\x1b[36m%s\x1b[0m",
         `http://localhost:${port}`
       );
     }

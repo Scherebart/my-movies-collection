@@ -17,6 +17,19 @@ module.exports = ({ apiKeyOmdb }) => {
     return next();
   });
 
+  router.get("/me", (req, res) => {
+    const {
+      user: { id, first_name, last_name },
+    } = req;
+    const me = {
+      id,
+      firstName: first_name,
+      lastName: last_name,
+    };
+
+    return res.status(200).send(me);
+  });
+
   router.get("/my-movies", async (req, res, next) => {
     const { user } = req;
 
@@ -26,12 +39,11 @@ module.exports = ({ apiKeyOmdb }) => {
   });
 
   router.put("/my-movies", async (req, res, next) => {
-    const { db, user, body: newMoviesCollection } = req;
+    const { sqlite, user, body: newMoviesCollection } = req;
 
-    db.prepare("UPDATE users SET movies = ? WHERE id = ?").run(
-      JSON.stringify(newMoviesCollection),
-      user.id
-    );
+    sqlite
+      .prepare("UPDATE users SET movies = ? WHERE id = ?")
+      .run(JSON.stringify(newMoviesCollection), user.id);
 
     return res.status(204).send();
   });

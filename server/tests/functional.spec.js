@@ -8,7 +8,23 @@ const ANOTHER_USER_ID = 5;
 
 describe("As a user", () => {
   beforeEach(() => {
-    db.haveUser({ id: USER_ID });
+    db.haveUser({ id: USER_ID, firstName: "Emma", lastName: "McCormick" });
+  });
+
+  test("I get data about myself", async () => {
+    db.haveUser({ id: ANOTHER_USER_ID, firstName: "Rob", lastName: "Runner" });
+    
+    const { status, data } = await asUser(ANOTHER_USER_ID).request({
+      method: "GET",
+      url: "/api/me",
+    });
+
+    expect(status).toBe(200);
+    expect(data).toEqual({
+      id: ANOTHER_USER_ID,
+      firstName: "Rob",
+      lastName: "Runner",
+    });
   });
 
   test("I get my favourite movies", async () => {
