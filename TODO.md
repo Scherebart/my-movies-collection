@@ -1,9 +1,9 @@
 # Current UI TODO
-1. navbar
+1. [OK] navbar
  - logo + title
  - user selector
-2. properly display tiles with my collection
-3. make tabs selectable
+2. [OK] properly display tiles with my collection
+3. [...] make tabs selectable
 4. Add search feature to the SECOND TAB
 5. Add button in the SEARCH to LIKE movie
 6. Add button to REMOVE liked movie in the first tab

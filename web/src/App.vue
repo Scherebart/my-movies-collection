@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
-import { pipe } from 'ramda';
 
 import MovieTile from './MovieTile.vue';
 
@@ -36,6 +35,12 @@ const fetchAsMe = async (apiFunction, assignable, options = {}) => {
 const me = ref(null)
 const movies = ref(null)
 
+const TABS = Object.freeze({
+  MY_COLLECTION: 'MY_COLLECTION',
+  OMDB: 'OMDB'
+})
+const activeTab = ref(TABS.MY_COLLECTION)
+
 watchEffect(() =>
   Promise.all([
     fetchAsMe('me', me),
@@ -64,18 +69,26 @@ watchEffect(() =>
         </div>
       </div>
     </nav>
+
     <section>
       <div class="tabs is-centered is-medium is-boxed">
         <ul>
-          <li> <a>My collection </a></li>
-          <li> <a> All movies </a> </li>
+          <li :class="{ 'is-active': activeTab === TABS.MY_COLLECTION }"> 
+            <a @click.prevent="activeTab = TABS.MY_COLLECTION">My collection </a></li>
+          <li :class="{ 'is-active': activeTab === TABS.OMDB }"> 
+            <a @click.prevent="activeTab = TABS.OMDB"> All movies </a> </li>
         </ul>
       </div>
     </section>
 
-    <section>
-      <div class="tile is-ancestor">
+    <section v-if="movies && movies.length">
+      <div class="columns is-multiline">
         <MovieTile v-for="movie in movies" :movie="movie"></MovieTile>
+      </div>
+    </section>
+    <section v-else>
+      <div class="container">
+        YOU HAVE NO MOVIES
       </div>
     </section>
   </div>

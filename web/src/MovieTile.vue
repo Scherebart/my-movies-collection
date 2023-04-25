@@ -5,14 +5,21 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="card tile is-parent is-4">
-    <!-- <div class="card"> -->
-      <div class="card-content">
-        <div class="media-content">
-          <p class="title is-4">{{ movie.Title }}</p>
-          <p class="subtitle is-6">Year: {{ movie.Year }}</p>
+  <div class="column is-4">
+    <div class="card">
+      <div class="card-image">
+        <figure class="image ">
+          <img :src="movie.Poster" >
+        </figure>
+      </div>
+      <div class="card-header">
+        <div class="card-header-title">
+          {{ movie.Title }}
         </div>
       </div>
-    <!-- </div> -->
+      <div class="card-content">
+        <p>Year: {{ movie.Year }}</p>
+      </div>
+    </div>
   </div>
 </template>
