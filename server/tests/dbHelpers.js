@@ -3,7 +3,7 @@ const TABLE_USERS = "users";
 module.exports = (sqlite) => ({
   grabUser(userId) {
     const userFromDB = sqlite
-      .prepare(`SELECT * FROM ${TABLE_USERS} WHERE id = ?`)
+      .prepare(`SELECT * FROM users WHERE id = ?`)
       .get(userId);
     userFromDB.movies = JSON.parse(userFromDB.movies);
 
@@ -16,7 +16,7 @@ module.exports = (sqlite) => ({
 
     return sqlite
       .prepare(
-        `INSERT INTO ${TABLE_USERS} (id, first_name, last_name, movies) 
+        `INSERT INTO users (id, first_name, last_name, movies) 
          VALUES (?, ?, ?, ?)`
       )
       .run(
@@ -29,7 +29,7 @@ module.exports = (sqlite) => ({
 
   userHasCollection(userId, moviesCollection) {
     return sqlite
-      .prepare(`UPDATE ${TABLE_USERS} SET movies = ? WHERE id = ?`)
+      .prepare(`UPDATE users SET movies = ? WHERE id = ?`)
       .run(JSON.stringify(moviesCollection), userId);
   },
 });

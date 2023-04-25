@@ -8,7 +8,6 @@ import TabOMDB from './TabOMDB.vue'
 import { HOME_URL, fetchAsMe } from './utils'
 
 const me = ref(null)
-
 const activeTab = shallowRef(TabMyCollection)
 
 watchEffect(() => fetchAsMe('me', me))
@@ -21,7 +20,7 @@ watchEffect(() => fetchAsMe('me', me))
         <a class="navbar-item" :href="HOME_URL">
           <h1 class="title">
             <img src="/vue.svg" class="logo" alt="Vite logo" />
-            My movies collection
+            My Movies Collection
           </h1>
         </a>
       </div>
@@ -35,7 +34,8 @@ watchEffect(() => fetchAsMe('me', me))
       </div>
     </nav>
 
-    <section>
+    
+    <div class="block" v-if="me">
       <div class="tabs is-centered is-medium is-boxed">
         <ul>
           <li :class="{ 'is-active': activeTab == TabMyCollection }">
@@ -46,8 +46,10 @@ watchEffect(() => fetchAsMe('me', me))
           </li>
         </ul>
       </div>
-    </section>
+    </div>
 
-    <component :is="activeTab"></component>
+    <div class="block" v-if="me">
+      <component :is="activeTab"></component>
+    </div>
   </div>
 </template>

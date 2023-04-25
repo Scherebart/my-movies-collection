@@ -5,11 +5,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="column is-4">
+  <div class="column is-3">
     <div class="card">
       <div class="card-image">
         <figure class="image ">
-          <img :src="movie.Poster" >
+          <img :src="movie.Poster">
         </figure>
       </div>
       <div class="card-header">
@@ -19,6 +19,10 @@ const props = defineProps({
       </div>
       <div class="card-content">
         <p>Year: {{ movie.Year }}</p>
+        <br>
+        <p>
+          <i>{{ movie.Plot }}</i>
+        </p>
       </div>
     </div>
   </div>
