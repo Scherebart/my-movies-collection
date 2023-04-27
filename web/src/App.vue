@@ -5,7 +5,7 @@ import TabMyCollection from './TabMyCollection.vue'
 import TabOMDB from './TabOMDB.vue'
 
 
-import { HOME_URL, fetchAsMe } from './utils'
+import { HOME_URL, fetchAsMe } from './common'
 
 const me = ref(null)
 const activeTab = shallowRef(TabMyCollection)
@@ -15,7 +15,7 @@ watchEffect(() => fetchAsMe('me', me))
 
 <template>
   <div class="container">
-    <nav class="navbar" role="navigation" aria-label="navigation">
+    <nav class="navbar block" role="navigation" aria-label="navigation">
       <div class="navbar-brand">
         <a class="navbar-item" :href="HOME_URL">
           <h1 class="title">
@@ -34,11 +34,10 @@ watchEffect(() => fetchAsMe('me', me))
       </div>
     </nav>
 
-    
     <div class="block" v-if="me">
       <div class="tabs is-centered is-medium is-boxed">
         <ul>
-          <li :class="{ 'is-active': activeTab == TabMyCollection }">
+          <li :class="{ 'is-active': activeTab === TabMyCollection }">
             <a @click.prevent="activeTab = TabMyCollection">My collection </a>
           </li>
           <li :class="{ 'is-active': activeTab === TabOMDB }">
@@ -49,7 +48,8 @@ watchEffect(() => fetchAsMe('me', me))
     </div>
 
     <div class="block" v-if="me">
-      <component :is="activeTab"></component>
+      <TabOMDB v-if="activeTab === TabOMDB"></TabOMDB>
+      <TabMyCollection v-if="activeTab === TabMyCollection"></TabMyCollection>
     </div>
   </div>
 </template>

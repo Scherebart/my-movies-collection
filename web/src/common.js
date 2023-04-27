@@ -1,9 +1,12 @@
-export const HOME_URL = 'http://localhost:8080/'
+export const HOME_URL = "http://localhost:8080/";
 
-const API_URL = HOME_URL + 'api/'
-const USER_ID = new URLSearchParams(document.location.search).get('user-id')
+const API_URL = HOME_URL + "api/";
+const USER_ID = new URLSearchParams(document.location.search).get("user-id");
 
+export const STAUS_LOADING = Symbol();
 export async function fetchAsMe(apiFunction, assignable, options = {}) {
+  assignable.value = null;
+
   const defaultOptions = {
     headers: Object.assign(
       {},
