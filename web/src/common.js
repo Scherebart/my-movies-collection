@@ -1,11 +1,14 @@
+import { ref, customRef } from "vue";
+
 export const HOME_URL = "http://localhost:8080/";
 
 const API_URL = HOME_URL + "api/";
 const USER_ID = new URLSearchParams(document.location.search).get("user-id");
 
 export const STAUS_LOADING = Symbol();
+
 export async function fetchAsMe(apiFunction, assignable, options = {}) {
-  assignable.value = null;
+  assignable.value = STAUS_LOADING;
 
   const defaultOptions = {
     headers: Object.assign(
@@ -33,3 +36,37 @@ export async function fetchAsMe(apiFunction, assignable, options = {}) {
 
   return value;
 }
+
+export function debouncer() {
+  let lastTimeout;
+
+  return (delay, func) => {
+    clearTimeout(lastTimeout);
+
+    lastTimeout = setTimeout(() => {
+      func();
+    }, delay);
+  };
+}
+
+export const debouncedRef = (initialValue, delay) =>
+  customRef((track, trigger) => {
+    let state = initialValue;
+
+    const debounce = debouncer();
+
+    return {
+      get() {
+        track();
+
+        return state;
+      },
+      set(newValue) {
+        debounce(delay, () => {
+          state = newValue;
+
+          trigger();
+        });
+      },
+    };
+  });

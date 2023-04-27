@@ -4,7 +4,7 @@
  - user selector
 2. [OK] properly display tiles with my collection
 3. [OK] make tabs selectable
-4. Add search feature to the SECOND TAB
+4. [OK] Add search feature to the SECOND TAB
 5. Add button in the SEARCH to LIKE movie
 6. Add button to REMOVE liked movie in the first tab
 7. Show LIKED STATUS in the search tab

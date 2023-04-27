@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 
-import { HOME_URL, fetchAsMe } from './common'
-import MovieTile from './MovieTile.vue';
+import { fetchAsMe,STAUS_LOADING } from './common'
+import MovieDetailsTile from './MovieDetailsTile.vue';
 
 const movies = ref(null)
 
@@ -10,19 +10,13 @@ watchEffect(() => fetchAsMe('my-movies', movies))
 </script>
 
 <template>
-  <section v-if="movies === null">
-    <div class="container">
-      LOADING...
-    </div>
-  </section>
-  <section v-else-if="movies && movies.length">
-    <div class="columns is-multiline">
-      <MovieTile v-for="movie in movies" :movie="movie"></MovieTile>
-    </div>
-  </section>
-  <section v-else>
-    <div class="container">
-      YOU HAVE NO MOVIES
-    </div>
-  </section>
+  <div v-if="movies === STAUS_LOADING" class="content">
+    LOADING...
+  </div>
+  <div v-else-if="movies && movies.length" class="columns is-multiline">
+    <MovieDetailsTile v-for="movie in movies" :movie="movie"></MovieDetailsTile>
+  </div>
+  <div v-else-if="movies && movies.length === 0" class="content is-medium">
+    Your collection is empty. Go search for your <strong>favourite movies</strong>!
+  </div>
 </template>
