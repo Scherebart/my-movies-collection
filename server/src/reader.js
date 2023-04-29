@@ -55,7 +55,13 @@ module.exports = ({ apiKeyOmdb }) => {
       if (data.Response === "False") {
         return [];
       } else {
-        return data.Search;
+        
+        return data.Search.map(({ imdbID, Title, Year, Poster }) => ({
+          imdbID,
+          Title,
+          Year,
+          Poster: Poster && Poster.indexOf("http") === 0 ? Poster : null,
+        }));
       }
     },
   };

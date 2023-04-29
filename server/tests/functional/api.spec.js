@@ -1,6 +1,6 @@
-const { functional } = require("./setup");
+const setupFunctional = require("../setupFunctional");
 
-const { asUser, asGuest, db, omdbApi } = functional();
+const { asUser, asGuest, db, omdbApi } = setupFunctional();
 
 const NONEXISTENT_USER_ID = 0;
 const USER_ID = 4;
@@ -119,12 +119,16 @@ describe("As a user", () => {
   test("I can search for movies", async () => {
     omdbApi.willSearchWith("love crazy", [
       {
+        imdbID: 'tt1',
         Title: "Crazy, Stupid, Love.",
         Year: "2011",
+        Poster: 'http://resource1'
       },
       {
+        imdbID: 'tt2',
         Title: "Love Crazy",
         Year: "1941",
+        Poster: 'http://resource2'
       },
     ]);
 
@@ -139,12 +143,16 @@ describe("As a user", () => {
     expect(status).toBe(200);
     expect(data).toEqual([
       {
+        imdbID: 'tt1',
         Title: "Crazy, Stupid, Love.",
         Year: "2011",
+        Poster: 'http://resource1'
       },
       {
+        imdbID: 'tt2',
         Title: "Love Crazy",
         Year: "1941",
+        Poster: 'http://resource2'
       },
     ]);
   });

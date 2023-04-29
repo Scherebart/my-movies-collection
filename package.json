@@ -4,7 +4,7 @@
     "start": "NODE_ENV=PROD node index.js",
     "build": "vite build web",
     "dev": "concurrently \"nodemon index.js -w server/src\" \"vite web\"",
-    "test": "NODE_ENV=test jest --root-dir server/tests --verbose --detectOpenHandles --colors 2>&1",
+    "test": "NODE_ENV=test jest --root-dir server --verbose --detectOpenHandles --colors 2>&1",
     "migrate:up": "knex migrate:up",
     "migrate:down": "knex migrate:down",
     "seed": "knex seed:run smallseed",

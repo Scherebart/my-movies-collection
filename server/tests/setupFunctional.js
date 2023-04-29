@@ -10,12 +10,13 @@ const { EnvType } = require("../../constants");
 const dbHelpers = require("./dbHelpers");
 const omdbApiHelpers = require("./omdbApiHelpers");
 
-const DB_STUB_FILE = path.join(__dirname, ".db", "db-STUB.sqlite3");
-const DB_FILE = path.join(__dirname, ".db", `db-test-${uuid()}.sqlite3`);
+const TESTS_ROOT_PATH = __dirname;
+const DB_STUB_FILE = path.join(TESTS_ROOT_PATH, ".db", "db-STUB.sqlite3");
+const DB_FILE = path.join(TESTS_ROOT_PATH, ".db", `db-test-${uuid()}.sqlite3`);
 const SERVER_PORT = 8081;
-const API_KEY_OMDB = "3b98b3f0";
+const API_KEY_OMDB = "xxx";
 
-function functional() {
+module.exports = () => {
   let closeServer;
   let sqlite;
 
@@ -39,7 +40,6 @@ function functional() {
      * (both the C sqlite and JS better-sqlite projects are well documented)
      */
     copyFileSync(DB_STUB_FILE, DB_FILE);
-
 
     Object.assign(omdbApi, omdbApiHelpers(API_KEY_OMDB));
 
@@ -104,8 +104,4 @@ function functional() {
     db,
     omdbApi,
   };
-}
-
-module.exports = {
-  functional,
 };
