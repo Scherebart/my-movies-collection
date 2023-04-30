@@ -5,6 +5,8 @@ const props = defineProps({
 
 import HeartFilled from './heart-filled-svgrepo-com.svg'
 import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
+import imageMoviePlaceholder from './movie-poster-placeholder.png'
+
 
 </script>
 
@@ -32,7 +34,7 @@ import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
 .like-button.empty:hover {
   background-color: #eaeaeaff;
   opacity: 1;
-  box-shadow: 0rem 0rem 0.8rem 0.2rem #aaa;
+  box-shadow: 0rem 0rem 0.8rem 0.2rem #999;
   transition: all 0.15s ease-in;
 }
 
@@ -40,7 +42,6 @@ import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
 .like-button.empty svg path {
   stroke: #333;
 }
-
 
 .like-button.filled {
   opacity: 1;
@@ -51,8 +52,9 @@ import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
 }
 
 .like-button.filled svg {
-  fill: #b32fed;
+  fill: #a040f9;
 }
+
 </style>
 
 <template>
@@ -65,7 +67,7 @@ import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
           <button class="button like-button is-medium filled">
           <!-- <button class="button like-button is-medium empty"> -->
             <HeartFilled class="icon"></HeartFilled>
-            <!-- <HeartEmptyThick class="icon empty"></HeartEmptyThick> -->
+            <!-- <HeartEmptyThick class="icon"></HeartEmptyThick> -->
           </button>
         </figure>
       </div>
@@ -73,7 +75,6 @@ import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
         <p class="card-header-title">
           {{ movie.Title }}
         </p>
-
       </div>
       <div class="card-content">
         <p>Year: {{ movie.Year }}</p>

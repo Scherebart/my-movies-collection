@@ -64,7 +64,7 @@ describe("As a user", () => {
     db.haveUser({ id: ANOTHER_USER_ID });
     db.userHasCollection(USER_ID, ["qwe", "321"]);
 
-    const { status, data } = await asUser(USER_ID).request({
+    const { status } = await asUser(USER_ID).request({
       method: "PUT",
       url: "/api/my-movies",
       data: ["321", "asd"],
