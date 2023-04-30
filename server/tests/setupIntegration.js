@@ -5,8 +5,8 @@ const nock = require("nock");
 const { v4: uuid } = require("uuid");
 
 const connectToSqlite = require("../src/connectToSqlite");
-const dbHelpers = require("./dbHelpers");
-const omdbApiHelpers = require("./omdbApiHelpers");
+const dbHelpers = require("./helpersDb");
+const omdbApiHelpers = require("./helpersOmdb");
 
 const TESTS_ROOT_PATH = __dirname
 const DB_STUB_FILE = path.join(TESTS_ROOT_PATH, ".db", "db-STUB.sqlite3");
