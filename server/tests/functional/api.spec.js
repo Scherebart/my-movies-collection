@@ -2,33 +2,36 @@ const setupFunctional = require("../setupFunctional");
 
 const { asUser, asGuest, db, omdbApi } = setupFunctional();
 
-const NONEXISTENT_USER_ID = 0;
-const USER_ID = 4;
-const ANOTHER_USER_ID = 5;
-
 describe("As a user", () => {
+  const USER_ID = 1;
+  const ANOTHER_USER_ID = 2;
+
   beforeEach(() => {
-    db.haveUser({ id: USER_ID, firstName: "Emma", lastName: "McCormick" });
+    db.haveUser({ id: USER_ID, firstName: "Rob", lastName: "Runner" });
+    db.userHasCollection(USER_ID, ["tt1285016", "tt0101889"]);
+
+    db.haveUser({
+      id: ANOTHER_USER_ID,
+      firstName: "Emma",
+      lastName: "McCormick",
+    });
   });
 
   test("I get data about myself", async () => {
-    db.haveUser({ id: ANOTHER_USER_ID, firstName: "Rob", lastName: "Runner" });
-    
-    const { status, data } = await asUser(ANOTHER_USER_ID).request({
+    const { status, data } = await asUser(USER_ID).request({
       method: "GET",
       url: "/api/me",
     });
 
     expect(status).toBe(200);
     expect(data).toEqual({
-      id: ANOTHER_USER_ID,
+      id: USER_ID,
       firstName: "Rob",
       lastName: "Runner",
     });
   });
 
   test("I get my favourite movies", async () => {
-    db.userHasCollection(USER_ID, ["tt1285016", "tt0101889"]);
     omdbApi.willGetMovie("tt1285016", {
       Title: "The Social Network",
       Year: "2010",
@@ -51,6 +54,7 @@ describe("As a user", () => {
   });
 
   test("I get empty collection when I have no favourite movies", async () => {
+    db.userHasCollection(USER_ID, []);
     const { status, data } = await asUser(USER_ID).request({
       method: "GET",
       url: "/api/my-movies",
@@ -61,9 +65,6 @@ describe("As a user", () => {
   });
 
   test("I can set favourite movies", async () => {
-    db.haveUser({ id: ANOTHER_USER_ID });
-    db.userHasCollection(USER_ID, ["qwe", "321"]);
-
     const { status } = await asUser(USER_ID).request({
       method: "PUT",
       url: "/api/my-movies",
@@ -119,16 +120,16 @@ describe("As a user", () => {
   test("I can search for movies", async () => {
     omdbApi.willSearchWith("love crazy", [
       {
-        imdbID: 'tt1',
+        imdbID: "tt1",
         Title: "Crazy, Stupid, Love.",
         Year: "2011",
-        Poster: 'http://resource1'
+        Poster: "http://resource1",
       },
       {
-        imdbID: 'tt2',
+        imdbID: "tt2",
         Title: "Love Crazy",
         Year: "1941",
-        Poster: 'http://resource2'
+        Poster: "http://resource2",
       },
     ]);
 
@@ -143,16 +144,16 @@ describe("As a user", () => {
     expect(status).toBe(200);
     expect(data).toEqual([
       {
-        imdbID: 'tt1',
+        imdbID: "tt1",
         Title: "Crazy, Stupid, Love.",
         Year: "2011",
-        Poster: 'http://resource1'
+        Poster: "http://resource1",
       },
       {
-        imdbID: 'tt2',
+        imdbID: "tt2",
         Title: "Love Crazy",
         Year: "1941",
-        Poster: 'http://resource2'
+        Poster: "http://resource2",
       },
     ]);
   });
@@ -174,10 +175,9 @@ describe("As a user", () => {
 });
 
 describe("As a non-existent user", () => {
-  test("I get 401 on calling api method", async () => {
-    db.haveUser({ id: USER_ID });
-    db.haveUser({ id: ANOTHER_USER_ID });
+  const NONEXISTENT_USER_ID = 100;
 
+  test("I get 401 on calling api method", async () => {
     const { status } = await asUser(NONEXISTENT_USER_ID).request({
       method: "GET",
       url: "/api/my-movies",
