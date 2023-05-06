@@ -27,7 +27,9 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
 }
 
 .like-button:hover,
-.like-button:hover svg {
+.like-button:hover svg,
+.like-button:focus,
+.like-button:focus svg {
   transition: all 0.15s ease-in;
 }
 
@@ -37,7 +39,8 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
   opacity: 0.65;
 }
 
-.like-button.empty:hover {
+.like-button.empty:hover,
+.like-button.empty:focus {
   background-color: #eaeaeaff;
   opacity: 1;
   box-shadow: 0rem 0rem 0.8rem 0.2rem #999;
@@ -47,12 +50,12 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
   opacity: 1;
   background-color: #eaeaeaff;
   border-color: #eaeaeaff;
-  box-shadow: 0rem 0rem 0.8rem 0.4rem #999;
+  box-shadow: 0rem 0rem 0.8rem 0.5rem #999 !important;
 }
 
 .like-button.filled:hover,
 .like-button.filled:focus {
-  box-shadow: 0rem 0rem 0.8rem 0.2rem #999;
+  border-color: #785396;
 }
 
 .like-button.empty svg path {
@@ -63,9 +66,6 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
   fill: #a040f9;
 }
 
-.like-button.filled:hover svg {
-  fill: #693f8d;
-}
 </style>
 
 <template>
