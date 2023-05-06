@@ -6,7 +6,7 @@
 3. [OK] make tabs selectable
 4. [OK] Add search feature to the SECOND TAB
 5. [OK] Add like button on the OMDB tab
-6. Add button to REMOVE liked movie on user's collection tab
+6. [OK] Add button to REMOVE liked movie on user's collection tab
 8. Show modal with details on clicking searched movie
 
 

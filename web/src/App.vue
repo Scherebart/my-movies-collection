@@ -28,8 +28,6 @@ function likeMovie(movieId) {
 
   return putAsMe('my-movies', movies)
 }
-
-
 </script>
 
 <template>

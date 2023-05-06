@@ -36,7 +36,7 @@ const props = defineProps({
 
 .cross-button:hover,
 .cross-button:focus {
-  box-shadow: 0rem 0rem 1rem 0.6rem #fda39eca;
+  box-shadow: 0rem 0rem 1rem 0.6rem #fda39eca !important;
   background-color: #fda39eca;
   border-color: #501418;
   opacity: 1;
@@ -61,9 +61,7 @@ const props = defineProps({
           <img v-else :src="imageMoviePlaceholder">
 
           <button @click="likeMovie(movie.imdbID)" class="button cross-button is-medium">
-            <!-- <span class="icon"> -->
-              <Cross class="icon"></Cross>
-            <!-- </span> -->
+            <Cross class="icon"></Cross>
           </button>
         </figure>
       </div>
