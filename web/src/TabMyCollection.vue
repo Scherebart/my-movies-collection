@@ -1,16 +1,23 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, watch } from 'vue';
 
-import { fetchAsMe,STAUS_LOADING } from './common'
+import { getAsMe, STATUS_LOADING } from './common'
 import MovieDetailsTile from './MovieDetailsTile.vue';
 
+const props = defineProps({
+  myMovies: Array
+})
 const movies = ref(null)
 
-watchEffect(() => fetchAsMe('my-movies', movies))
+watch(
+  () => props.myMovies,
+  () => getAsMe('my-movies', movies), 
+  { immediate: true, deep: true }
+)
 </script>
 
 <template>
-  <div v-if="movies === STAUS_LOADING" class="content">
+  <div v-if="movies === STATUS_LOADING" class="content">
     LOADING...
   </div>
   <div v-else-if="movies && movies.length" class="columns is-multiline">

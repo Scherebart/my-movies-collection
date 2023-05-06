@@ -1,6 +1,7 @@
 const path = require("path");
 
 const express = require("express");
+const expressHttpProxy = require("express-http-proxy")
 
 const connectToSqlite = require("./connectToSqlite");
 const apiRouter = require("./routerApi");
@@ -16,11 +17,18 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
     req.sqlite = sqlite;
 
     const userId = req.get("user-id");
+    let userFromDb = null;
     if (userId) {
-      const userFromDb = sqlite
-        .prepare(`SELECT * FROM users WHERE id = ?`)
+      userFromDb = sqlite
+        .prepare("SELECT * FROM users WHERE id = ?")
         .get(userId);
-      req.user = userFromDb;
+
+      if (userFromDb) {
+        userFromDb.movies = JSON.parse(userFromDb.movies);
+        req.user = userFromDb;
+      } else {
+        req.user = null;
+      }
     }
 
     next();
@@ -28,10 +36,14 @@ module.exports = async ({ envType, sqliteConfig, apiKeyOmdb, port }) => {
   app.use(express.json());
   app.use("/api", apiRouter({ apiKeyOmdb }));
   if (envType === EnvType.DEV) {
-    app.use("/", require("express-http-proxy")("localhost:5173"));
+    app.use("/", expressHttpProxy("localhost:5173"));
   } else {
     app.use(express.static(WEB_DIST));
   }
+  app.use((err, req, res, next) => {
+    console.error('[ROOT]', err);
+    return res.status(500).send({ error: "Unexpected error occured" });
+  });
 
   const server = app.listen(port, () => {
     if (envType !== EnvType.TEST) {

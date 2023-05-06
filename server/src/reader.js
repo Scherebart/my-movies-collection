@@ -13,9 +13,8 @@ module.exports = ({ apiKeyOmdb }) => {
     async getUserMovies(user) {
       const { movies } = user;
 
-      const movieIds = JSON.parse(movies);
       return Promise.all(
-        movieIds.map(async (id) => {
+        movies.map(async (id) => {
           const { status, data } = await omdbAxiosBase.request({
             params: { i: id },
           });

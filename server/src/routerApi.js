@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 
-const { ApplicationError, UnauthorizedError } = require("./errors");
+const { UserError, UnauthorizedError } = require("./errors");
 const reader = require("./reader");
 
 module.exports = ({ apiKeyOmdb }) => {
@@ -19,15 +19,16 @@ module.exports = ({ apiKeyOmdb }) => {
 
   router.get("/me", (req, res) => {
     const {
-      user: { id, first_name, last_name },
+      user: { id, first_name, last_name, movies },
     } = req;
     const me = {
       id,
       firstName: first_name,
       lastName: last_name,
+      movies,
     };
 
-    return res.status(200).send(me);
+    return res.status(200).type("json").send(me);
   });
 
   router.get("/my-movies", async (req, res, next) => {
@@ -40,6 +41,8 @@ module.exports = ({ apiKeyOmdb }) => {
 
   router.put("/my-movies", async (req, res, next) => {
     const { sqlite, user, body: newMoviesCollection } = req;
+
+    console.log(newMoviesCollection);
 
     sqlite
       .prepare("UPDATE users SET movies = ? WHERE id = ?")
@@ -74,7 +77,7 @@ module.exports = ({ apiKeyOmdb }) => {
     if (err) {
       res.type("json");
 
-      if (err instanceof ApplicationError) {
+      if (err instanceof UserError) {
         return res.status(400).send({ error: err.message });
       } else if (err instanceof UnauthorizedError) {
         return res.status(401).send({ error: "Unauthorized" });

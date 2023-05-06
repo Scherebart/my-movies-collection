@@ -1,12 +1,13 @@
 <script setup>
 const props = defineProps({
-  movie: Object
+  movie: Object,
+  isMyMovie: Boolean,
+  likeMovie: Function
 })
 
 import HeartFilled from './heart-filled-svgrepo-com.svg'
-import HeartEmptyThick from './heart-empty-thick-svgrepo-com.svg'
+import HeartEmpty from './heart-empty-svgrepo-com.svg'
 import imageMoviePlaceholder from './movie-poster-placeholder.png'
-
 
 </script>
 
@@ -18,43 +19,53 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
   right: 0;
   border-radius: 50%;
   border-width: 0.15rem;
-  border-color: #444;
-  background-color: #eaeaeae0;
 }
 
-.like-button:hover {
-  border-color: #555;
+.like-button,
+.like-button svg {
+  transition: all 0.4s ease-out;
+}
+
+.like-button:hover,
+.like-button:hover svg {
+  transition: all 0.15s ease-in;
 }
 
 .like-button.empty {
+  border-color: #555;
+  background-color: #eaeaeae0;
   opacity: 0.65;
-  transition: all 0.4s ease-out;
 }
 
 .like-button.empty:hover {
   background-color: #eaeaeaff;
   opacity: 1;
   box-shadow: 0rem 0rem 0.8rem 0.2rem #999;
-  transition: all 0.15s ease-in;
-}
-
-
-.like-button.empty svg path {
-  stroke: #333;
 }
 
 .like-button.filled {
   opacity: 1;
   background-color: #eaeaeaff;
   border-color: #eaeaeaff;
-  border-width: 0.1rem;
-  box-shadow: 0rem 0rem 0.8rem 0.4rem #aaa;
+  box-shadow: 0rem 0rem 0.8rem 0.4rem #999;
+}
+
+.like-button.filled:hover,
+.like-button.filled:focus {
+  box-shadow: 0rem 0rem 0.8rem 0.2rem #999;
+}
+
+.like-button.empty svg path {
+  stroke: #444;
 }
 
 .like-button.filled svg {
   fill: #a040f9;
 }
 
+.like-button.filled:hover svg {
+  fill: #693f8d;
+}
 </style>
 
 <template>
@@ -64,10 +75,10 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
         <figure class="image ">
           <img v-if="movie.Poster" :src="movie.Poster">
           <img v-else :src="imageMoviePlaceholder">
-          <button class="button like-button is-medium filled">
-          <!-- <button class="button like-button is-medium empty"> -->
-            <HeartFilled class="icon"></HeartFilled>
-            <!-- <HeartEmptyThick class="icon"></HeartEmptyThick> -->
+          <button @click="likeMovie(movie.imdbID)" class="button like-button is-medium"
+            :class="{ filled: isMyMovie, empty: !isMyMovie }">
+            <HeartFilled v-if="isMyMovie" class="icon"></HeartFilled>
+            <HeartEmpty v-if="!isMyMovie" class="icon"></HeartEmpty>
           </button>
         </figure>
       </div>

@@ -1,4 +1,4 @@
-class ApplicationError extends Error {}
+class UserError extends Error {}
 class UnauthorizedError extends Error {
   constructor() {
     super("Unauthorized");
@@ -6,6 +6,6 @@ class UnauthorizedError extends Error {
 }
 
 module.exports = {
-  ApplicationError,
+  UserError,
   UnauthorizedError,
 };

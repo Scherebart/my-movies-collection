@@ -1,40 +1,68 @@
 import { ref, customRef } from "vue";
+import { mergeDeepLeft } from "ramda";
 
 export const HOME_URL = "http://localhost:8080/";
 
 const API_URL = HOME_URL + "api/";
 const USER_ID = new URLSearchParams(document.location.search).get("user-id");
 
-export const STAUS_LOADING = Symbol();
+export const STATUS_LOADING = Symbol();
 
-export async function fetchAsMe(apiFunction, assignable, options = {}) {
-  assignable.value = STAUS_LOADING;
+const getBodyFromResponse = async (response) => {
+  const contentType = response.headers.get("Content-Type");
+
+  if (!contentType) {
+    return null;
+  }
+
+  if (!contentType.includes("application/json")) {
+    return null;
+  }
+
+  return response.json();
+};
+
+async function fetchAsMe(apiFunction, assignable, options = {}) {
+  if (assignable) {
+    assignable.value = STATUS_LOADING;
+  }
 
   const defaultOptions = {
-    headers: Object.assign(
-      {},
-      options.headers || {
-        "user-id": USER_ID,
-      }
-    ),
+    headers: {
+      "user-id": USER_ID,
+    },
   };
+  const mergedOptions = mergeDeepLeft(options, defaultOptions);
 
-  const mergedOptions = Object.assign({}, options, defaultOptions);
+  const response = await fetch(API_URL + apiFunction, mergedOptions);
+  const body = await getBodyFromResponse(response);
 
-  const ret = await fetch(API_URL + apiFunction, mergedOptions);
-  const body = await ret.json();
-
-  if (ret.status !== 200) {
+  if (!response.ok) {
     console.error(apiFunction, body);
   }
 
-  const value = ret.status == 200 ? body : null;
+  const value = response.status == 200 ? body : null;
 
   if (assignable) {
     assignable.value = value;
   }
 
   return value;
+}
+
+export async function getAsMe(apiFunction, assignable, options = {}) {
+  return fetchAsMe(apiFunction, assignable, { ...options, method: "GET" });
+}
+
+export async function putAsMe(apiFunction, data, options = {}) {
+  return fetchAsMe(apiFunction, null, {
+    ...options,
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 }
 
 export function debouncer() {

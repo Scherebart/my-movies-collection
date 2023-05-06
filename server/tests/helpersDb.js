@@ -10,10 +10,9 @@ module.exports = (sqlite) => ({
     return userFromDB;
   },
 
-  haveUser(user) {
-    const { id, firstName, lastName } = user;
+  haveUser({ id, firstName, lastName }) {
     const moviesCollection = [];
-
+    
     return sqlite
       .prepare(
         `INSERT INTO users (id, first_name, last_name, movies) 

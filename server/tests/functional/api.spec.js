@@ -28,6 +28,7 @@ describe("As a user", () => {
       id: USER_ID,
       firstName: "Rob",
       lastName: "Runner",
+      movies: ["tt1285016", "tt0101889"],
     });
   });
 
@@ -64,7 +65,7 @@ describe("As a user", () => {
     expect(data).toEqual([]);
   });
 
-  test("I can set favourite movies", async () => {
+  test("I can save favourite movies", async () => {
     const { status } = await asUser(USER_ID).request({
       method: "PUT",
       url: "/api/my-movies",

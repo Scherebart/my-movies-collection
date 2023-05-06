@@ -2,15 +2,34 @@
 import { ref, shallowRef, watchEffect } from 'vue';
 
 import TabMyCollection from './TabMyCollection.vue'
-import TabOMDB from './TabOMDB.vue'
+import TabOmdb from './TabOmdb.vue'
 
 
-import { HOME_URL, fetchAsMe } from './common'
+import { HOME_URL, getAsMe, putAsMe, STATUS_LOADING } from './common'
 
 const me = ref(null)
 const activeTab = shallowRef(TabMyCollection)
 
-watchEffect(() => fetchAsMe('me', me))
+getAsMe('me', me)
+
+function likeMovie(movieId) {
+  if (me.value === null || me.value === STATUS_LOADING) {
+    return;
+  }
+
+  const { movies } = me.value
+
+  let movieIdIndex = movies.indexOf(movieId)
+  if (movieIdIndex > -1) {
+    movies.splice(movieIdIndex, 1)
+  } else {
+    movies.push(movieId)
+  }
+
+  return putAsMe('my-movies', movies)
+}
+
+
 </script>
 
 <template>
@@ -40,16 +59,17 @@ watchEffect(() => fetchAsMe('me', me))
           <li :class="{ 'is-active': activeTab === TabMyCollection }">
             <a @click.prevent="activeTab = TabMyCollection">My collection </a>
           </li>
-          <li :class="{ 'is-active': activeTab === TabOMDB }">
-            <a @click.prevent="activeTab = TabOMDB"> All movies </a>
+          <li :class="{ 'is-active': activeTab === TabOmdb }">
+            <a @click.prevent="activeTab = TabOmdb"> All movies </a>
           </li>
         </ul>
       </div>
     </div>
 
     <div class="block" v-if="me">
-      <TabOMDB v-if="activeTab === TabOMDB"></TabOMDB>
-      <TabMyCollection v-if="activeTab === TabMyCollection"></TabMyCollection>
+      <KeepAlive>
+        <component :like-movie="likeMovie" :my-movies="me.movies" :is="activeTab"></component>
+      </KeepAlive>
     </div>
   </div>
 </template>
