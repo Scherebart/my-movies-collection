@@ -44,8 +44,11 @@ watchEffect(() => {
       LOADING...
     </div>
     <div v-else-if="movies && movies.length" class="columns is-multiline">
-      <MovieBriefTile :like-movie="likeMovie" :is-my-movie="movieLikes[index]" v-for="(movie, index) in movies" :movie="movie">
-      </MovieBriefTile>
+      <MovieBriefTile 
+        :like-movie="likeMovie" 
+        :is-my-movie="movieLikes[index]" 
+        v-for="(movie, index) in movies" :movie="movie"
+      ></MovieBriefTile>
     </div>
     <div v-else-if="movies && movies.length === 0" class="content">
       NO MOVIES FOUND
