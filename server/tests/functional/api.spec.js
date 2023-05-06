@@ -36,10 +36,12 @@ describe("As a user", () => {
     omdbApi.willGetMovie("tt1285016", {
       Title: "The Social Network",
       Year: "2010",
+      Poster: "http://resource1",
     });
     omdbApi.willGetMovie("tt0101889", {
       Title: "The Fisher King",
       Year: "1991",
+      Poster: "http://resource2",
     });
 
     const { status, data } = await asUser(USER_ID).request({
@@ -49,8 +51,8 @@ describe("As a user", () => {
 
     expect(status).toBe(200);
     expect(data).toEqual([
-      { Title: "The Social Network", Year: "2010" },
-      { Title: "The Fisher King", Year: "1991" },
+      { Title: "The Social Network", Year: "2010", Poster: "http://resource1" },
+      { Title: "The Fisher King", Year: "1991", Poster: "http://resource2" },
     ]);
   });
 

@@ -1,7 +1,10 @@
 <script setup>
+import imageMoviePlaceholder from './movie-poster-placeholder.png'
+
 const props = defineProps({
   movie: Object
 })
+
 </script>
 
 <template>
@@ -9,7 +12,8 @@ const props = defineProps({
     <div class="card">
       <div class="card-image">
         <figure class="image ">
-          <img :src="movie.Poster">
+          <img  v-if="movie.Poster" :src="movie.Poster">
+          <img v-else :src="imageMoviePlaceholder">
         </figure>
       </div>
       <div class="card-header">

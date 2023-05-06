@@ -42,8 +42,6 @@ module.exports = ({ apiKeyOmdb }) => {
   router.put("/my-movies", async (req, res, next) => {
     const { sqlite, user, body: newMoviesCollection } = req;
 
-    console.log(newMoviesCollection);
-
     sqlite
       .prepare("UPDATE users SET movies = ? WHERE id = ?")
       .run(JSON.stringify(newMoviesCollection), user.id);

@@ -23,7 +23,15 @@ module.exports = ({ apiKeyOmdb }) => {
             return null;
           }
 
-          return data;
+          const { imdbID, Title, Year, Plot, Poster } = data;
+          
+          return {
+            imdbID,
+            Title,
+            Year,
+            Plot,
+            Poster: Poster && Poster.indexOf("http") === 0 ? Poster : null,
+          };
         })
       );
     },
@@ -54,7 +62,6 @@ module.exports = ({ apiKeyOmdb }) => {
       if (data.Response === "False") {
         return [];
       } else {
-        
         return data.Search.map(({ imdbID, Title, Year, Poster }) => ({
           imdbID,
           Title,
