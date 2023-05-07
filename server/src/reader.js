@@ -16,7 +16,7 @@ module.exports = ({ apiKeyOmdb }) => {
       return Promise.all(
         movies.map(async (id) => {
           const { status, data } = await omdbAxiosBase.request({
-            params: { i: id },
+            params: { i: id, plot: 'short' },
           });
 
           if (status != 200 || data.Response === "False") {
@@ -37,7 +37,7 @@ module.exports = ({ apiKeyOmdb }) => {
     },
     async getMovie(id) {
       const { status, data } = await omdbAxiosBase.request({
-        params: { i: id },
+        params: { i: id, plot: 'full' },
       });
 
       if (status != 200) {
@@ -48,7 +48,15 @@ module.exports = ({ apiKeyOmdb }) => {
         return null;
       }
 
-      return data;
+      const { imdbID, Title, Year, Plot, Poster } = data;
+
+      return {
+        imdbID,
+        Title,
+        Year,
+        Plot,
+        Poster: Poster && Poster.indexOf("http") === 0 ? Poster : null,
+      };
     },
     async searchMovies(terms) {
       const { status, data } = await omdbAxiosBase.request({

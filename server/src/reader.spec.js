@@ -17,6 +17,35 @@ beforeEach(() => {
   db.haveUser({ id: USER_ID, firstName: "Emma", lastName: "McCormick" });
 });
 
+describe("I can get details of existing movie", () => {
+  test("Missing poster is given as null", async () => {
+    omdbApi.willGetMovie("tt1285016", {
+      imdbID: "tt1285016",
+      // I don't expect the Poster field to be always present
+    });
+    omdbApi.willGetMovie("tt0101889", {
+      imdbID: "tt0101889",
+      Poster: "N/A",
+    });
+    omdbApi.willGetMovie("tt010111", {
+      imdbID: "tt010111",
+      Poster: "http://picresource",
+    });
+
+    const movies = await Promise.all([
+      getMovie("tt1285016"),
+      getMovie("tt0101889"),
+      getMovie("tt010111"),
+    ]);
+
+    expect(movies).toMatchObject([
+      { imdbID: "tt1285016", Poster: null },
+      { imdbID: "tt0101889", Poster: null },
+      { imdbID: "tt010111", Poster: "http://picresource" },
+    ]);
+  });
+});
+
 describe("can get user's favourite movies", () => {
   test("Missing poster is given as null", async () => {
     db.userHasCollection(USER_ID, ["tt1285016", "tt0101889", "tt010111"]);

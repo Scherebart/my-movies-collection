@@ -95,6 +95,7 @@ describe("As a user", () => {
     omdbApi.willGetMovie("tt1285016", {
       Title: "The Social Network",
       Year: "2010",
+      Poster: "http://resource1",
     });
 
     const { status, data } = await asUser(USER_ID).request({
@@ -106,6 +107,7 @@ describe("As a user", () => {
     expect(data).toEqual({
       Title: "The Social Network",
       Year: "2010",
+      Poster: "http://resource1",
     });
   });
 

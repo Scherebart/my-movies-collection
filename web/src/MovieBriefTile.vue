@@ -1,13 +1,24 @@
 <script setup>
+import { ref } from 'vue';
+
+import HeartFilled from './heart-filled-svgrepo-com.svg'
+import HeartEmpty from './heart-empty-svgrepo-com.svg'
+import imageMoviePlaceholder from './movie-poster-placeholder.png'
+import MovieDetailsModal from './MovieDetailsModal.vue';
+
 const props = defineProps({
   movie: Object,
   isMyMovie: Boolean,
   likeMovie: Function
 })
 
-import HeartFilled from './heart-filled-svgrepo-com.svg'
-import HeartEmpty from './heart-empty-svgrepo-com.svg'
-import imageMoviePlaceholder from './movie-poster-placeholder.png'
+const modalIsDisplayed = ref(false)
+
+function showOrCloseModal() {
+  console.log(`show or close modal ${modalIsDisplayed.value}`)
+  modalIsDisplayed.value = !modalIsDisplayed.value
+}
+
 
 </script>
 
@@ -68,16 +79,16 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
 </style>
 
 <template>
-  <div class="column is-3">
+  <div class="movie-brief-tile column is-3">
     <div class="card">
       <div class="card-image">
-        <figure class="image ">
-          <img v-if="movie.Poster" :src="movie.Poster">
+        <figure @click="showOrCloseModal" class="image">
+          <img v-if="movie.Poster" :src="movie.Poster" class="is-clickable">
           <img v-else :src="imageMoviePlaceholder">
-          <button @click="likeMovie(movie.imdbID)" class="button like-button is-medium"
+          <button @click.stop="likeMovie(movie.imdbID)" class="button like-button is-medium"
             :class="{ filled: isMyMovie, empty: !isMyMovie }">
             <HeartFilled v-if="isMyMovie" class="icon"></HeartFilled>
-            <HeartEmpty v-if="!isMyMovie" class="icon"></HeartEmpty>
+            <HeartEmpty v-else class="icon"></HeartEmpty>
           </button>
         </figure>
       </div>
@@ -90,5 +101,7 @@ import imageMoviePlaceholder from './movie-poster-placeholder.png'
         <p>Year: {{ movie.Year }}</p>
       </div>
     </div>
+    <MovieDetailsModal v-if="modalIsDisplayed" :movie-id="movie.imdbID" :is-my-movie="isMyMovie" :like-movie="likeMovie"
+      @close-modal="showOrCloseModal" :class="{ 'is-active': modalIsDisplayed }"></MovieDetailsModal>
   </div>
 </template>
