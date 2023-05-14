@@ -1,7 +1,7 @@
 class UserError extends Error {}
 class UnauthorizedError extends Error {
-  constructor() {
-    super("Unauthorized");
+  constructor(message) {
+    super(message || "Unauthorized");
   }
 }
 

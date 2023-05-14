@@ -4,6 +4,7 @@ const { copyFileSync, rmSync } = require("node:fs");
 const nock = require("nock");
 const axios = jest.requireActual("axios");
 const { v4: uuid } = require("uuid");
+const jwt = require("jsonwebtoken");
 
 const initServer = require("../src/initServer");
 const { EnvType } = require("../../constants");
@@ -16,7 +17,7 @@ const DB_FILE = path.join(TESTS_ROOT_PATH, ".db", `db-test-${uuid()}.sqlite3`);
 const SERVER_PORT = 8081;
 const API_KEY_OMDB = "xxx";
 
-module.exports = () => {
+module.exports = ({ serverPrivateKey = "test123" } = {}) => {
   let closeServer;
   let sqlite;
 
@@ -47,6 +48,7 @@ module.exports = () => {
       sqliteConfig: {
         path: DB_FILE,
       },
+      privateKey: serverPrivateKey,
       apiKeyOmdb: API_KEY_OMDB,
       port: SERVER_PORT,
       envType: EnvType.TEST,
@@ -81,10 +83,13 @@ module.exports = () => {
   };
 
   function asUser(userId) {
+    const jwtToken = jwt.sign({ id: userId }, serverPrivateKey, {
+      algorithm: "HS256",
+    });
     const axiosInstance = axios.create({
       ...axiosBaseConfig,
       headers: {
-        "user-id": userId,
+        authorization: "Bearer " + jwtToken,
       },
     });
 

@@ -18,23 +18,15 @@ module.exports = ({ apiKeyOmdb }) => {
   });
 
   router.get("/me", (req, res) => {
-    const {
-      user: { id, first_name, last_name, movies },
-    } = req;
-    const me = {
-      id,
-      firstName: first_name,
-      lastName: last_name,
-      movies,
-    };
+    const { user } = req;
 
-    return res.status(200).type("json").send(me);
+    return res.status(200).type("json").send(user);
   });
 
   router.get("/my-movies", async (req, res, next) => {
-    const { user } = req;
+    const { sqlite, user } = req;
 
-    const movies = await getUserMovies(user);
+    const movies = await getUserMovies(sqlite, user.id);
 
     return res.status(200).type("json").send(movies);
   });
@@ -69,21 +61,6 @@ module.exports = ({ apiKeyOmdb }) => {
     const result = await searchMovies(terms);
 
     return res.status(200).type("json").send(result);
-  });
-
-  router.use((err, req, res, next) => {
-    if (err) {
-      res.type("json");
-
-      if (err instanceof UserError) {
-        return res.status(400).send({ error: err.message });
-      } else if (err instanceof UnauthorizedError) {
-        return res.status(401).send({ error: "Unauthorized" });
-      } else {
-        console.error(err);
-        return res.status(500).send({ error: "Unexpected error occured" });
-      }
-    }
   });
 
   return router;

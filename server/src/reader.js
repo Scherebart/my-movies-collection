@@ -9,8 +9,23 @@ module.exports = ({ apiKeyOmdb }) => {
     },
   });
 
+  function getUser(sqlite, userId) {
+    const user = sqlite
+      .prepare("SELECT * FROM users WHERE id = ?")
+      .get(userId);
+
+    if (user) {
+      user.movies = JSON.parse(user.movies);
+      return user;
+    } else {
+      return null;
+    }
+  }
   return {
-    async getUserMovies(user) {
+    getUser,
+
+    async getUserMovies(sqlite, userId) {
+      const user = getUser(sqlite, userId)
       const { movies } = user;
 
       return Promise.all(

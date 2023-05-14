@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 
-import { getAsMe, STATUS_LOADING } from './common';
+import { apiGet, STATUS_LOADING }  from './common';
 import imageMoviePlaceholder from './movie-poster-placeholder.png'
 import HeartFilled from './heart-filled-svgrepo-com.svg'
 import HeartEmpty from './heart-empty-svgrepo-com.svg'
@@ -14,12 +14,14 @@ const props = defineProps({
 const emits = defineEmits(['closeModal'])
 
 const movie = ref(null)
+const jwtToken = inject('jwtToken')
 
-getAsMe('movies/' + props.movieId, movie)
+apiGet(jwtToken, 'movies/' + props.movieId, movie)
 </script>
 
 <style>
 @media screen and (min-width: 1024px) {
+
   .modal-card,
   .modal-content {
     width: 893px;

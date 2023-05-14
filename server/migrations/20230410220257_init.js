@@ -4,13 +4,15 @@
  */
 exports.up = function (knex) {
   const query = knex.schema.createTable("users", function (table) {
-    table.increments("id").primary()
-    table.string('first_name')
-    table.string('last_name')
-    table.text('movies')
+    table.increments("id").primary();
+    table.string("username").unique();
+    table.string("pass");
+    table.string("first_name");
+    table.string("last_name");
+    table.text("movies");
   });
 
-  return query
+  return query;
 };
 
 /**

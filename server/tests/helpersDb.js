@@ -1,28 +1,34 @@
 const TABLE_USERS = "users";
 
 module.exports = (sqlite) => ({
-  grabUser(userId) {
+  grabUserById(userId) {
     const userFromDB = sqlite
       .prepare(`SELECT * FROM users WHERE id = ?`)
       .get(userId);
-    userFromDB.movies = JSON.parse(userFromDB.movies);
 
     return userFromDB;
   },
+  grabUserByName(username) {
+    const userFromDB = sqlite
+      .prepare(`SELECT * FROM users WHERE username = ?`)
+      .get(username);
 
-  haveUser({ id, firstName, lastName }) {
-    const moviesCollection = [];
-    
+    return userFromDB
+  },
+
+  haveUser({ id, username, pass, first_name, last_name }) {
     return sqlite
       .prepare(
-        `INSERT INTO users (id, first_name, last_name, movies) 
-         VALUES (?, ?, ?, ?)`
+        `INSERT INTO users (id, username, pass, first_name, last_name, movies) 
+         VALUES (?, ?, ?, ?, ?, ?)`
       )
       .run(
-        id || undefined,
-        firstName || "john",
-        lastName || "Mick",
-        JSON.stringify(moviesCollection)
+        id,
+        username,
+        pass,
+        first_name,
+        last_name,
+        JSON.stringify([])
       );
   },
 

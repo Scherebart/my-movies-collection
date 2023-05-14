@@ -8,18 +8,21 @@ exports.seed = async function (knex) {
   await knex("users").insert([
     {
       id: 1,
+      username: 'anona',
       first_name: "Anona",
       last_name: "Cruz",
       movies: '["tt0848228","tt4154756","tt2395427","tt4154796"]',
     },
     {
       id: 2,
+      username: 'camilla',
       first_name: "Camilla",
       last_name: "Sayer",
       movies: "[]",
     },
     {
       id: 3,
+      username: 'ganesh',
       first_name: "Ganesh",
       last_name: "Zentai",
       movies:
@@ -27,12 +30,18 @@ exports.seed = async function (knex) {
     },
     {
       id: 4,
+      username: 'vivien',
+      // password: test123
+      pass: '$2b$10$HHHndHSOScdxgkcE/MIYBe8ThNZWyPd8aRezz7jse88kQRG1uPnCq',
       first_name: "Vivien",
       last_name: "Straub",
       movies: '["tt0926084","tt0417741"]',
     },
     {
       id: 5,
+      username: 'berna',
+      // password: test123
+      pass: '$2b$10$HHHndHSOScdxgkcE/MIYBe8ThNZWyPd8aRezz7jse88kQRG1uPnCq',
       first_name: "Bernardita",
       last_name: "Bishop",
       movies: '["tt0389860"]',

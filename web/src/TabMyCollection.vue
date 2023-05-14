@@ -1,8 +1,8 @@
 <script setup>
-import { ref, watchEffect, watch } from 'vue';
+import { ref, watchEffect, watch, inject } from 'vue';
 import { difference } from 'ramda';
 
-import { getAsMe, STATUS_LOADING } from './common'
+import { apiGet, STATUS_LOADING } from './common'
 import MovieDetailsTile from './MovieDetailsTile.vue';
 
 const props = defineProps({
@@ -10,6 +10,7 @@ const props = defineProps({
   likeMovie: Function
 })
 const movies = ref(null)
+const jwtToken = inject('jwtToken')
 
 let _prev_props = {
   myMovies: props.myMovies ?? []
@@ -22,7 +23,7 @@ watch(
     _prev_props.myMovies = Array.from(props.myMovies ?? [])
 
     if (addedItems.length > 0) {
-      return getAsMe('my-movies', movies)
+      return apiGet(jwtToken, 'my-movies', movies)
     }
 
     for (const removedMovieId of removedItems) {
@@ -59,9 +60,10 @@ watch(
     LOADING...
   </div>
   <TransitionGroup tag="div" name="fade" v-else-if="movies && movies.length" class="columns is-multiline">
-    <MovieDetailsTile v-for="movie in movies" :key="movie.imdbID" :like-movie="likeMovie" :movie="movie"></MovieDetailsTile>
+    <MovieDetailsTile v-for="movie in movies" :key="movie.imdbID" :like-movie="likeMovie" :movie="movie">
+    </MovieDetailsTile>
   </TransitionGroup>
-  <div v-else-if="movies && movies.length === 0" class="content is-medium">
+  <div v-else-if="!movies || movies.length === 0" class="content is-medium">
     Your collection is empty. Go search for your <strong>favourite movies</strong>!
   </div>
 </template>

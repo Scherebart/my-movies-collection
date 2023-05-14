@@ -1,12 +1,13 @@
 const reader = require("./reader");
 const setupIntegration = require("../tests/setupIntegration");
 
-const { db, omdbApi } = setupIntegration();
+const { sqlite, db, omdbApi } = setupIntegration();
 
 const API_KEY_OMDB = "xxx";
 const USER_ID = 4;
 
-let getUserMovies, getMovie, searchMovies;
+let  getUserMovies, getMovie, searchMovies;
+
 beforeAll(() => {
   ({ getUserMovies, getMovie, searchMovies } = reader({
     apiKeyOmdb: API_KEY_OMDB,
@@ -49,7 +50,6 @@ describe("I can get details of existing movie", () => {
 describe("can get user's favourite movies", () => {
   test("Missing poster is given as null", async () => {
     db.userHasCollection(USER_ID, ["tt1285016", "tt0101889", "tt010111"]);
-    const user = db.grabUser(USER_ID);
     omdbApi.willGetMovie("tt1285016", {
       imdbID: "tt1285016",
       // I don't expect the Poster field to be always present
@@ -63,7 +63,7 @@ describe("can get user's favourite movies", () => {
       Poster: "http://picresource",
     });
 
-    const userMovies = await getUserMovies(user);
+    const userMovies = await getUserMovies(sqlite, USER_ID);
 
     expect(userMovies).toMatchObject([
       { imdbID: "tt1285016", Poster: null },

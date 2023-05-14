@@ -4,14 +4,14 @@ module.exports = (apiKeyOmdb) => ({
   willGetMovie(id, data) {
     nock("https://www.omdbapi.com")
       .get("/")
-      .query({ apikey: apiKeyOmdb, i: id })
+      .query((params) => params.i === id && params.apikey === apiKeyOmdb)
       .reply(200, data);
   },
 
   willGetNothing(id) {
     nock("https://www.omdbapi.com")
       .get("/")
-      .query({ apikey: apiKeyOmdb, i: id })
+      .query((params) => params.i === id && params.apikey === apiKeyOmdb)
       .reply(200, {
         Response: "False",
         Error: "Incorrect IMDb ID.",

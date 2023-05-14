@@ -15,10 +15,8 @@ const props = defineProps({
 const modalIsDisplayed = ref(false)
 
 function showOrCloseModal() {
-  console.log(`show or close modal ${modalIsDisplayed.value}`)
   modalIsDisplayed.value = !modalIsDisplayed.value
 }
-
 
 </script>
 

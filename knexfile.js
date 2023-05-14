@@ -5,6 +5,7 @@ module.exports = {
   connection: {
     filename: path.join(__dirname, "server", ".db", "db.sqlite3"),
   },
+  useNullAsDefault: true,
   migrations: {
     tableName: "knex_migrations",
     directory: path.join(__dirname, "server", "migrations"),

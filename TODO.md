@@ -8,11 +8,14 @@
 5. [OK] User can (un)like and see like status of a movie while searching the movie DB
 6. [OK] User can unlike a movie while browsing his collection
 7. [OK] User can click on a sough movie to see a modal with details on the movie
-8. User can register and act on his account only on a successful login 
+8. [OK] User can register and act on his account only on a successful login 
+9. The app is available on public server on https
+10. The user can paginate through search results
 
 # Further improvements
 
 ## Backend
+- Normalize the search query from the user (make it whitespace insensitive)
 - Extend current sqlite connection with auto conversions
   - column names case: snake_case <--> camelCase
   - type: text <--> json

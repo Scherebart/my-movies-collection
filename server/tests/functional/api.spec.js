@@ -7,13 +7,13 @@ describe("As a user", () => {
   const ANOTHER_USER_ID = 2;
 
   beforeEach(() => {
-    db.haveUser({ id: USER_ID, firstName: "Rob", lastName: "Runner" });
+    db.haveUser({ id: USER_ID, first_name: "Rob", last_name: "Runner" });
     db.userHasCollection(USER_ID, ["tt1285016", "tt0101889"]);
 
     db.haveUser({
       id: ANOTHER_USER_ID,
-      firstName: "Emma",
-      lastName: "McCormick",
+      first_name: "Emma",
+      last_name: "McCormick",
     });
   });
 
@@ -76,10 +76,8 @@ describe("As a user", () => {
 
     expect(status).toBe(204);
 
-    const userFromDb = await db.grabUser(USER_ID);
-    expect(userFromDb).toMatchObject({
-      movies: ["321", "asd"],
-    });
+    const userFromDb = await db.grabUserById(USER_ID);
+    expect(JSON.parse(userFromDb.movies)).toEqual(["321", "asd"]);
   });
 
   test("I get 404 on calling non-existent api method", async () => {

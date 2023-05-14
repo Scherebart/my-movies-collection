@@ -1,18 +1,19 @@
 <script setup>
+import { ref, watchEffect, inject } from 'vue';
 import { isEmpty } from 'ramda';
-import { ref, watchEffect } from 'vue';
+
+import { apiGet, debouncedRef, STATUS_LOADING } from './common'
+import MovieBriefTile from './MovieBriefTile.vue';
 
 const props = defineProps({
   myMovies: Array,
   likeMovie: Function
 })
 
-import { getAsMe, debouncedRef, STATUS_LOADING } from './common'
-import MovieBriefTile from './MovieBriefTile.vue';
-
 const searchTerms = debouncedRef("", 400);
 const movies = ref(null);
 const movieLikes = ref(null)
+const jwtToken = inject('jwtToken')
 
 watchEffect(() => {
   if (isEmpty(searchTerms.value)) {
@@ -20,7 +21,7 @@ watchEffect(() => {
     return
   }
 
-  getAsMe('movies' + '?' + new URLSearchParams({ terms: searchTerms.value }), movies)
+  apiGet(jwtToken, 'movies' + '?' + new URLSearchParams({ terms: searchTerms.value }), movies)
 })
 
 watchEffect(() => {
@@ -44,11 +45,8 @@ watchEffect(() => {
       LOADING...
     </div>
     <div v-else-if="movies && movies.length" class="columns is-multiline">
-      <MovieBriefTile 
-        :like-movie="likeMovie" 
-        :is-my-movie="movieLikes[index]" 
-        v-for="(movie, index) in movies" :movie="movie"
-      ></MovieBriefTile>
+      <MovieBriefTile :like-movie="likeMovie" :is-my-movie="movieLikes[index]" v-for="(movie, index) in movies"
+        :movie="movie"></MovieBriefTile>
     </div>
     <div v-else-if="movies && movies.length === 0" class="content">
       NO MOVIES FOUND
