@@ -7,10 +7,11 @@
 4. [OK] User can search the movie DB on the SECOND TAB
 5. [OK] User can (un)like and see like status of a movie while searching the movie DB
 6. [OK] User can unlike a movie while browsing his collection
-7. [OK] User can click on a sough movie to see a modal with details on the movie
+7. [OK] User can click on a sough movie to see a modal with its details
 8. [OK] User can register and act on his account only on a successful login 
-9. The app is available on public server on https
-10. The user can paginate through search results
+9. [OK] User can click on his own movie to see a modal with its details
+10. The app is available on public server on https
+11. The user can paginate through search results
 
 # Further improvements
 

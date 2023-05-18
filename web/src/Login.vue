@@ -1,7 +1,7 @@
 <script setup>
-import { ref, shallowRef, watchEffect } from 'vue';
+import { ref } from 'vue';
 
-import { authPost, STATUS_LOADING, deriveUserMessageFromResponse } from './common'
+import { authPost, deriveUserMessageFromResponse } from './common'
 
 const emit = defineEmits(['userMessage', 'switchLoginOrRegister', 'loggedIn'])
 const form = ref({})

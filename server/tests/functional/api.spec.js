@@ -7,7 +7,7 @@ describe("As a user", () => {
   const ANOTHER_USER_ID = 2;
 
   beforeEach(() => {
-    db.haveUser({ id: USER_ID, first_name: "Rob", last_name: "Runner" });
+    db.haveUser({ id: USER_ID, username: 'rob123', first_name: "Rob", last_name: "Runner" });
     db.userHasCollection(USER_ID, ["tt1285016", "tt0101889"]);
 
     db.haveUser({
@@ -25,7 +25,7 @@ describe("As a user", () => {
 
     expect(status).toBe(200);
     expect(data).toEqual({
-      id: USER_ID,
+      username: 'rob123',
       firstName: "Rob",
       lastName: "Runner",
       movies: ["tt1285016", "tt0101889"],

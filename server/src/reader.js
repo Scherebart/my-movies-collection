@@ -10,13 +10,18 @@ module.exports = ({ apiKeyOmdb }) => {
   });
 
   function getUser(sqlite, userId) {
-    const user = sqlite
-      .prepare("SELECT * FROM users WHERE id = ?")
-      .get(userId);
+    const user = sqlite.prepare("SELECT * FROM users WHERE id = ?").get(userId);
 
     if (user) {
-      user.movies = JSON.parse(user.movies);
-      return user;
+      const { id, username, first_name, last_name, movies } = user;
+
+      return {
+        id,
+        username,
+        firstName: first_name,
+        lastName: last_name,
+        movies: JSON.parse(movies),
+      };
     } else {
       return null;
     }
@@ -25,13 +30,13 @@ module.exports = ({ apiKeyOmdb }) => {
     getUser,
 
     async getUserMovies(sqlite, userId) {
-      const user = getUser(sqlite, userId)
+      const user = getUser(sqlite, userId);
       const { movies } = user;
 
       return Promise.all(
         movies.map(async (id) => {
           const { status, data } = await omdbAxiosBase.request({
-            params: { i: id, plot: 'short' },
+            params: { i: id, plot: "short" },
           });
 
           if (status != 200 || data.Response === "False") {
@@ -39,7 +44,7 @@ module.exports = ({ apiKeyOmdb }) => {
           }
 
           const { imdbID, Title, Year, Plot, Poster } = data;
-          
+
           return {
             imdbID,
             Title,
@@ -52,7 +57,7 @@ module.exports = ({ apiKeyOmdb }) => {
     },
     async getMovie(id) {
       const { status, data } = await omdbAxiosBase.request({
-        params: { i: id, plot: 'full' },
+        params: { i: id, plot: "full" },
       });
 
       if (status != 200) {

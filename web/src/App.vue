@@ -14,11 +14,8 @@ const lastUserMessage = shortTermRef(null, 10000)
 
 const me = ref(null)
 const displayedName = computed(() => {
-  console.log('computing displayed name')
   if (me.value) {
-    console.log('me value')
     const { username, firstName, lastName } = me.value
-    console.log(username, firstName, lastName)
     if (firstName && lastName) {
       return firstName + ' ' + lastName
     } else {

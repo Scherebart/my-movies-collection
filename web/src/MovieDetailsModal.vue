@@ -1,14 +1,19 @@
 <script setup>
 import { ref, inject } from 'vue';
 
-import { apiGet, STATUS_LOADING }  from './common';
+import { isNil } from 'ramda';
+
+import { apiGet, STATUS_LOADING } from './common';
 import imageMoviePlaceholder from './movie-poster-placeholder.png'
 import HeartFilled from './heart-filled-svgrepo-com.svg'
 import HeartEmpty from './heart-empty-svgrepo-com.svg'
 
 const props = defineProps({
   movieId: String,
-  isMyMovie: Boolean,
+  isMyMovie: {
+    type: Boolean,
+    default: null
+  },
   likeMovie: Function
 })
 const emits = defineEmits(['closeModal'])
@@ -54,9 +59,9 @@ apiGet(jwtToken, 'movies/' + props.movieId, movie)
             {{ movie.Plot }}
           </p>
           <br>
-          <p>Year: {{ movie.Year }}</p>
+          <p>Year: {{ movie.Year }} {{ isMyMovie }}</p>
 
-          <button @click.stop="likeMovie(movie.imdbID)" class="button like-button is-medium"
+          <button v-if="!isNil(isMyMovie)" @click.stop="likeMovie(movie.imdbID)" class="button like-button is-medium"
             :class="{ filled: isMyMovie, empty: !isMyMovie }">
             <HeartFilled v-if="isMyMovie" class="icon"></HeartFilled>
             <HeartEmpty v-else class="icon"></HeartEmpty>

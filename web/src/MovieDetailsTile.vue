@@ -1,4 +1,7 @@
 <script setup>
+import { ref } from 'vue';
+
+import MovieDetailsModal from './MovieDetailsModal.vue';
 import imageMoviePlaceholder from './movie-poster-placeholder.png'
 import Cross from './cross-svgrepo-com.svg'
 
@@ -6,6 +9,12 @@ const props = defineProps({
   movie: Object,
   likeMovie: Function
 })
+
+const modalIsDisplayed = ref(false)
+
+function showOrCloseModal() {
+  modalIsDisplayed.value = !modalIsDisplayed.value
+}
 
 </script>
 
@@ -56,7 +65,7 @@ const props = defineProps({
   <div class="column is-3">
     <div class="card">
       <div class="card-image">
-        <figure class="image ">
+        <figure @click="showOrCloseModal" class="image is-clickable">
           <img v-if="movie.Poster" :src="movie.Poster">
           <img v-else :src="imageMoviePlaceholder">
 
@@ -78,5 +87,7 @@ const props = defineProps({
         </p>
       </div>
     </div>
+    <MovieDetailsModal v-if="modalIsDisplayed" :movie-id="movie.imdbID" 
+      @close-modal="showOrCloseModal" :class="{ 'is-active': modalIsDisplayed }"></MovieDetailsModal>
   </div>
 </template>

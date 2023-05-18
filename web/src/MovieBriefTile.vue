@@ -80,8 +80,8 @@ function showOrCloseModal() {
   <div class="movie-brief-tile column is-3">
     <div class="card">
       <div class="card-image">
-        <figure @click="showOrCloseModal" class="image">
-          <img v-if="movie.Poster" :src="movie.Poster" class="is-clickable">
+        <figure @click="showOrCloseModal" class="image is-clickable">
+          <img v-if="movie.Poster" :src="movie.Poster">
           <img v-else :src="imageMoviePlaceholder">
           <button @click.stop="likeMovie(movie.imdbID)" class="button like-button is-medium"
             :class="{ filled: isMyMovie, empty: !isMyMovie }">
