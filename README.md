@@ -27,3 +27,35 @@ The http header `user-id` represents an authentication.
 I can now develop all authentication-dependent part of the system *before* developing actual authentication scheme.
 
 I can become any user by adding `user-id` query param in the web address 
+
+## Project setup
+
+1. Run:
+```bash
+pnpm install
+pnpm init-env
+```
+
+2. Obtain API key from the omdbapi.com and put it into the `.env` file under `API_KEY_OMDB`
+
+3. Run:
+```bash
+pnpm migrate:up
+pnpm test:migrate:up
+
+# optionally you may fill db with test data for local development
+pnpm seed
+```
+
+4. Run `pnpm dev` to start dev server. 
+You will see a link to local website in the logs.
+
+To run the prod server do:
+```bash
+pnpm build
+pnpm start
+```
+
+To run tests do `pnpm test [optional jest filter]`
+
+
