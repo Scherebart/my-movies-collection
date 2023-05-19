@@ -1,6 +1,7 @@
 const path = require("path");
 
 const { pipe } = require("ramda");
+require("dotenv").config();
 
 const { EnvType } = require("./constants");
 
@@ -13,11 +14,10 @@ module.exports = {
   envType,
   apiServer: {
     port: 8080,
-    privateKey:
-      "0e7aa33f12bbd57d8b3948a1c6349a7e492474ce5723c68a137ad1edd40ac992032777ff11f34f68385bc315df9aa3e4c6fab04088d81414d198c00c94702dce",
+    privateKey: process.env['SERVER_PRIVATE_KEY'],
   },
   sqlite: {
     path: path.join(__dirname, "server", ".db", "db.sqlite3"),
   },
-  apiKeyOmdb: "3b98b3f0",
+  apiKeyOmdb: process.env['API_KEY_OMDB'],
 };
