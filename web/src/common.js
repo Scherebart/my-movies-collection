@@ -1,11 +1,10 @@
 import { ref, customRef } from "vue";
 import { mergeDeepRight } from "ramda";
 
-export const HOME_URL = "http://localhost:8080/";
+export const HOME_URL = import.meta.env.VITE_HOME_URL;
 
 const API_URL = HOME_URL + "api/";
 const AUTH_URL = HOME_URL + "auth/";
-const USER_ID = new URLSearchParams(document.location.search).get("user-id");
 
 export const STATUS_LOADING = Symbol();
 

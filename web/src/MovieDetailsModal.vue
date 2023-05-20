@@ -59,7 +59,7 @@ apiGet(jwtToken, 'movies/' + props.movieId, movie)
             {{ movie.Plot }}
           </p>
           <br>
-          <p>Year: {{ movie.Year }} {{ isMyMovie }}</p>
+          <p>Year: {{ movie.Year }}</p>
 
           <button v-if="!isNil(isMyMovie)" @click.stop="likeMovie(movie.imdbID)" class="button like-button is-medium"
             :class="{ filled: isMyMovie, empty: !isMyMovie }">

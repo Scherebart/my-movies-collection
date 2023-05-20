@@ -17,7 +17,10 @@ module.exports = {
     privateKey: process.env['SERVER_PRIVATE_KEY'],
   },
   sqlite: {
-    path: path.join(__dirname, "server", ".db", "db.sqlite3"),
+    path: path.join(__dirname, ".db", "db.sqlite3"),
   },
   apiKeyOmdb: process.env['API_KEY_OMDB'],
 };
+
+console.log(process.env['SERVER_PRIVATE_KEY'])
+

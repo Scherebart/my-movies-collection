@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   client: "better-sqlite3",
   connection: {
-    filename: path.join(__dirname, "server", ".db", "db.sqlite3"),
+    filename: path.join(__dirname, ".db", "db.sqlite3"),
   },
   useNullAsDefault: true,
   migrations: {
